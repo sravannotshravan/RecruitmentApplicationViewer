@@ -407,57 +407,115 @@
       color: #bb86fc;
     }
     
-    .help-button {
+    /* Button container - horizontal layout */
+    .mobile-buttons {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #bb86fc, #9c4dcc);
+      top: 0;
+      right: 0;
+      display: flex;
+      flex-direction: row;
+      gap: 1px;
+      z-index: 1000;
+    }
+    
+    .help-button, .patch-button, .analytics-button {
+      width: 42px;
+      height: 42px;
+      padding: 0;
       border: none;
       color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.9rem;
       font-weight: 500;
-      box-shadow: 0 2px 8px rgba(187, 134, 252, 0.3);
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Hanging down effect - rounded bottom corners only */
+      border-radius: 0 0 16px 16px;
+      /* Enhanced drop shadow for hanging effect */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      /* Hide original text content */
+      text-indent: -9999px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .help-button {
+      background: linear-gradient(135deg, #bb86fc, #9c4dcc);
     }
     
     .patch-button {
-      position: absolute;
-      top: 20px;
-      right: 150px;
       background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-      border: none;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
-      transition: all 0.3s ease;
     }
     
     .analytics-button {
-      position: absolute;
-      top: 20px;
-      right: 280px;
       background: linear-gradient(135deg, #4fc3f7, #29b6f6);
-      border: none;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      box-shadow: 0 2px 8px rgba(79, 195, 247, 0.3);
-      transition: all 0.3s ease;
+    }
+    
+    /* Show only emoji icons using pseudo-elements */
+    .help-button::after {
+      content: "❓";
+      position: absolute;
+      font-size: 1.3rem;
+      text-indent: 0;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .patch-button::after {
+      content: "📋";
+      position: absolute;
+      font-size: 1.3rem;
+      text-indent: 0;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .analytics-button::after {
+      content: "📊";
+      position: absolute;
+      font-size: 1.3rem;
+      text-indent: 0;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
     }
     
     .help-button:hover, .patch-button:hover, .analytics-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(187, 134, 252, 0.4);
+      /* Enhanced hanging effect on hover - move down and reduce shadow */
+      transform: translateY(3px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Desktop override - show text with hanging style */
+    @media (min-width: 769px) {
+      .mobile-buttons {
+        top: 0;
+        right: 20px;
+        gap: 2px;
+      }
+      
+      .help-button, .patch-button, .analytics-button {
+        width: auto;
+        height: 48px;
+        padding: 8px 16px;
+        border-radius: 0 0 12px 12px; /* Keep hanging style */
+        text-indent: 0;
+        font-size: 0.9rem;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Keep hanging shadow */
+        min-width: 120px;
+      }
+      
+      .help-button::after, .patch-button::after, .analytics-button::after {
+        display: none;
+      }
+      
+      .help-button:hover, .patch-button:hover, .analytics-button:hover {
+        transform: translateY(3px); /* Same hanging hover effect */
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      }
     }
     
     .patch-button:hover {
@@ -506,25 +564,69 @@
         width: 95%;
       }
       
-      .help-button {
-        top: 10px;
-        right: 10px;
-        padding: 6px 10px;
-        font-size: 0.8rem;
+      /* Mobile button container - horizontal layout at top right */
+      .mobile-buttons {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        flex-direction: row;
+        gap: 1px;
+        z-index: 1000;
       }
       
-      .patch-button {
-        top: 50px;
-        right: 10px;
-        padding: 6px 10px;
-        font-size: 0.8rem;
+      .help-button, .patch-button, .analytics-button {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Hanging down effect - rounded bottom corners only */
+        border-radius: 0 0 16px 16px;
+        /* Enhanced drop shadow for hanging effect */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        /* Hide original text content */
+        text-indent: -9999px;
+        overflow: hidden;
+        position: relative;
       }
       
-      .analytics-button {
-        top: 90px;
-        right: 10px;
-        padding: 6px 10px;
-        font-size: 0.8rem;
+      /* Show only emoji icons on mobile using pseudo-elements */
+      .help-button::after {
+        content: "❓";
+        position: absolute;
+        font-size: 1.3rem;
+        text-indent: 0;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      
+      .patch-button::after {
+        content: "�";
+        position: absolute;
+        font-size: 1.3rem;
+        text-indent: 0;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      
+      .analytics-button::after {
+        content: "📊";
+        position: absolute;
+        font-size: 1.3rem;
+        text-indent: 0;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      
+      .help-button:hover, .patch-button:hover, .analytics-button:hover {
+        /* Enhanced hanging effect on hover - move down and reduce shadow */
+        transform: translateY(3px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
       }
       
       .toast {
@@ -536,9 +638,11 @@
     </head>
     <body>
       <div class="main-container">
-          <button id="helpBtn" class="help-button">❓ How to Use</button>
-          <button id="patchBtn" class="patch-button">📋 Patch Notes</button>
-          <button id="analyticsBtn" class="analytics-button">📊 Analytics</button>
+          <div class="mobile-buttons">
+            <button id="analyticsBtn" class="analytics-button">📊 Analytics</button>
+            <button id="patchBtn" class="patch-button">📋 Patch Notes</button>
+            <button id="helpBtn" class="help-button">❓ How to Use</button>
+          </div>
           <div class="header-container">
             <img src="logo.png" alt="Logo" class="logo" />
             <h1>
@@ -791,6 +895,43 @@
               <button class="close" id="closePatchModal">&times;</button>
             </div>
             
+            <div class="instruction-section">
+              <h3>� Version 1.63.4 - Mobile UI Enhancement</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
+              <ul>
+                <li><strong>📱 Mobile-Optimized Buttons:</strong> Top-right buttons now show as icons only on mobile devices</li>
+                <li><strong>🔄 Horizontal Layout:</strong> Buttons arranged horizontally instead of vertically stacked</li>
+                <li><strong>🎨 Hanging Effect:</strong> Buttons have rounded bottom corners and drop shadows for a "hanging down" appearance</li>
+                <li><strong>📐 Better Spacing:</strong> Improved button sizing (42x42px) and minimal gaps for clean look</li>
+                <li><strong>✨ Enhanced Hover:</strong> Buttons move down on hover to enhance the hanging effect</li>
+                <li><strong>🎯 Space Efficient:</strong> Takes up much less space on mobile screens</li>
+              </ul>
+            </div>
+
+            <div class="instruction-section">
+              <h3>�🔧 Version 1.63.3 - Tag Library Fix</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
+              <ul>
+                <li><strong>🛠️ Fixed Tag Library Pollution:</strong> Stopped adding partial tags while typing to tag library</li>
+                <li><strong>🎯 Clean Popular Tags:</strong> No more "not", "not e", "not ev" etc. in popular tags</li>
+                <li><strong>💾 Save-Only Addition:</strong> Tags only added to library when actually saved, not during preview</li>
+                <li><strong>🎨 Smart Color Assignment:</strong> Preview uses consistent colors without polluting library</li>
+                <li><strong>⚡ Better Performance:</strong> Reduced unnecessary tag library operations</li>
+              </ul>
+            </div>
+
+            <div class="instruction-section">
+              <h3>⌨️ Version 1.63.2 - Enter Key Preview Control</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
+              <ul>
+                <li><strong>⌨️ Enter Key Preview:</strong> Press Enter to show tag preview (no auto-updates while typing)</li>
+                <li><strong>� Ctrl+Enter to Save:</strong> Use Ctrl+Enter to save tags, Enter just shows preview</li>
+                <li><strong>� Zero Clutter:</strong> No automatic updates - complete control over when preview appears</li>
+                <li><strong>⚡ Tab Formatting:</strong> Tab key still auto-formats and shows preview</li>
+                <li><strong>🎯 Better Control:</strong> User decides exactly when to see tag preview</li>
+              </ul>
+            </div>
+
             <div class="instruction-section">
               <h3>🔧 Version 1.63.1 - Recent Activity Fix</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
@@ -1082,9 +1223,20 @@
             if (tagLibrary.has(cleanTag)) {
               return tagLibrary.get(cleanTag).color;
             }
-            // Auto-assign color for new tags
-            addToTagLibrary(tagName);
-            return tagLibrary.get(cleanTag).color;
+            // Return a default color for new tags without adding them to library
+            // Tags are only added to library when actually saved
+            const colorIndex = Math.abs(hashCode(cleanTag)) % tagColors.length;
+            return tagColors[colorIndex];
+          }
+          
+          function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+              const char = str.charCodeAt(i);
+              hash = ((hash << 5) - hash) + char;
+              hash = hash & hash; // Convert to 32-bit integer
+            }
+            return hash;
           }
 
           function getPopularTags(limit = 10) {
@@ -1781,7 +1933,7 @@
                 const tagsInput = document.createElement('input');
                 tagsInput.type = 'text';
                 tagsInput.className = 'form-control mb-2';
-                tagsInput.placeholder = 'Add tags (comma-separated) or click popular tags above...';
+                tagsInput.placeholder = 'Add tags (comma-separated), press Enter to preview, Ctrl+Enter to save...';
                 tagsInput.style.background = '#3a3a3a';
                 tagsInput.style.border = '1px solid #bb86fc';
                 tagsInput.style.color = '#ffffff';
@@ -1808,9 +1960,9 @@
                 tagPreview.appendChild(tagPreviewLabel);
                 tagPreview.appendChild(tagPreviewContent);
                 
-                // Live preview functionality
-                tagsInput.addEventListener('input', function() {
-                  const value = this.value.trim();
+                // Live preview functionality - updates on Enter key press
+                function updateTagPreview() {
+                  const value = tagsInput.value.trim();
                   if (value === '') {
                     tagPreview.style.display = 'none';
                     return;
@@ -1842,13 +1994,20 @@
                     `;
                     tagPreviewContent.appendChild(tagSpan);
                   });
-                });
+                }
                 
                 // Enhanced keyboard shortcuts for tag input
                 tagsInput.addEventListener('keydown', function(e) {
                   if (e.key === 'Enter') {
-                    e.preventDefault();
-                    saveTagsBtn.click();
+                    if (e.ctrlKey) {
+                      // Ctrl+Enter to save
+                      e.preventDefault();
+                      saveTagsBtn.click();
+                    } else {
+                      // Just Enter to show preview
+                      e.preventDefault();
+                      updateTagPreview();
+                    }
                   } else if (e.key === 'Escape') {
                     cancelTagsBtn.click();
                   } else if (e.key === 'Tab' && this.value.includes(',')) {
@@ -1856,8 +2015,8 @@
                     e.preventDefault();
                     const formatted = this.value.split(',').map(tag => tag.trim()).filter(tag => tag).join(', ');
                     this.value = formatted;
-                    // Trigger input event to update preview
-                    this.dispatchEvent(new Event('input'));
+                    // Update preview after formatting
+                    updateTagPreview();
                   }
                 });
                 
