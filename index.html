@@ -269,10 +269,189 @@
         padding: 12px 8px;
       }
     }
+    
+    /* Toast Notification Styles */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1050;
+    }
+    
+    .toast {
+      background-color: #2a2a2a;
+      color: #ffffff;
+      border: 1px solid #555555;
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all 0.3s ease-in-out;
+      min-width: 300px;
+      text-align: center;
+    }
+    
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .toast.success {
+      border-left: 4px solid #28a745;
+      background: linear-gradient(135deg, #28a745, #20c997);
+    }
+    
+    .toast.error {
+      border-left: 4px solid #dc3545;
+      background: linear-gradient(135deg, #dc3545, #e74c3c);
+    }
+    
+    .toast.info {
+      border-left: 4px solid #bb86fc;
+      background: linear-gradient(135deg, #bb86fc, #9c4dcc);
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal-content {
+      background-color: #1a1a1a;
+      margin: 5% auto;
+      padding: 30px;
+      border: 1px solid #333333;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.9);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #333333;
+    }
+    
+    .modal-title {
+      color: #bb86fc;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .close:hover {
+      color: #bb86fc;
+    }
+    
+    .help-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #bb86fc, #9c4dcc);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(187, 134, 252, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .help-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(187, 134, 252, 0.4);
+    }
+    
+    .instruction-section {
+      margin-bottom: 20px;
+    }
+    
+    .instruction-section h3 {
+      color: #bb86fc;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    
+    .instruction-section ul {
+      color: #e0e0e0;
+      padding-left: 20px;
+    }
+    
+    .instruction-section li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+    
+    .keyboard-shortcut {
+      background-color: #333333;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.9em;
+      color: #bb86fc;
+    }
+    
+    /* Mobile adjustments for modal */
+    @media (max-width: 768px) {
+      .modal-content {
+        margin: 10% auto;
+        padding: 20px;
+        width: 95%;
+      }
+      
+      .help-button {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+      
+      .toast {
+        min-width: 280px;
+        margin: 0 10px;
+      }
+    }
   </style>
     </head>
     <body>
       <div class="main-container">
+          <button id="helpBtn" class="help-button">❓ How to Use</button>
           <div class="header-container">
             <img src="logo.png" alt="Logo" class="logo" />
             <h1>
@@ -337,10 +516,136 @@
           <div class="footer">Made with <span style="color:#bb86fc;">♥</span> for recruitment teams</div>
         </div>
 
+        <!-- How to Use Modal -->
+        <div id="helpModal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 class="modal-title">📖 How to Use the Recruitment Viewer</h2>
+              <button class="close" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>🗂️ Getting Started</h3>
+              <ul>
+                <li><strong>Upload File:</strong> Click "Choose file" or drag & drop an Excel file (.xlsx/.xls)</li>
+                <li><strong>Supported Format:</strong> Excel files with candidate information in columns</li>
+                <li><strong>Automatic Detection:</strong> The app automatically detects column headers</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>🔍 Navigation & Search</h3>
+              <ul>
+                <li><strong>Browse Candidates:</strong> Use "Previous" and "Next" buttons to navigate</li>
+                <li><strong>Keyboard Shortcuts:</strong> <span class="keyboard-shortcut">←</span> Previous, <span class="keyboard-shortcut">→</span> Next</li>
+                <li><strong>Search:</strong> Type keywords in the search box to filter candidates</li>
+                <li><strong>Clear Search:</strong> Empty search box to show all candidates again</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>✅ Reviewing Candidates</h3>
+              <ul>
+                <li><strong>Approve:</strong> Click "Approve Candidate" to shortlist (turns green)</li>
+                <li><strong>Reject:</strong> Click "Reject Candidate" to remove from shortlist (stays gray)</li>
+                <li><strong>Status Tracking:</strong> See live counts of shortlisted/not shortlisted</li>
+                <li><strong>Filter View:</strong> Use dropdown to show "All", "Approved", or "Rejected" only</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>📊 Filtering & Organization</h3>
+              <ul>
+                <li><strong>Show All:</strong> View all candidates regardless of status</li>
+                <li><strong>Show Approved:</strong> View only shortlisted candidates</li>
+                <li><strong>Show Rejected:</strong> View only non-shortlisted candidates</li>
+                <li><strong>Status Counter:</strong> Track progress with live counters</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>💾 Saving Your Work</h3>
+              <ul>
+                <li><strong>Save Changes:</strong> Click "💾 Save Changes" to download updated Excel file</li>
+                <li><strong>Preserves Data:</strong> All original data + your shortlist decisions</li>
+                <li><strong>New Column:</strong> Adds "shortlisted" column with TRUE/FALSE values</li>
+                <li><strong>Backup Recommended:</strong> Save regularly to avoid losing progress</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>📱 Mobile & Responsive</h3>
+              <ul>
+                <li><strong>Touch Friendly:</strong> Optimized for mobile and tablet use</li>
+                <li><strong>Swipe Navigation:</strong> Use arrow keys or buttons to navigate</li>
+                <li><strong>Responsive Design:</strong> Works on all screen sizes</li>
+                <li><strong>Dark Theme:</strong> Easy on eyes during long review sessions</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toastContainer" class="toast-container"></div>
+
       <script>
           let applications = [];
             let filteredIndexes = [];
             let currentIndex = 0;
+
+          // Toast notification system
+          function showToast(message, type = 'info', duration = 5000) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            
+            toastContainer.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            // Auto remove after duration
+            setTimeout(() => {
+              toast.classList.remove('show');
+              setTimeout(() => {
+                if (toast.parentNode) {
+                  toast.parentNode.removeChild(toast);
+                }
+              }, 300);
+            }, duration);
+          }
+
+          // Modal functionality
+          const modal = document.getElementById('helpModal');
+          const helpBtn = document.getElementById('helpBtn');
+          const closeBtn = document.getElementById('closeModal');
+
+          helpBtn.addEventListener('click', () => {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+          });
+
+          closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+          });
+
+          // Close modal when clicking outside
+          window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+              modal.style.display = 'none';
+              document.body.style.overflow = 'auto';
+            }
+          });
+
+          // Close modal with Escape key
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+              modal.style.display = 'none';
+              document.body.style.overflow = 'auto';
+            }
+          });
 
           document.getElementById('fileInput').addEventListener('change', handleFile, false);
           // New file picker UI wiring
@@ -384,11 +689,15 @@
           document.addEventListener('keydown', handleArrowKeys);
           document.getElementById('filterSelect').addEventListener('change', handleFilter);
           document.getElementById('saveBtn').addEventListener('click', function() {
-            if (applications.length === 0) return;
+            if (applications.length === 0) {
+              showToast('⚠️ No data to save. Please load a file first.', 'error');
+              return;
+            }
             const ws = XLSX.utils.json_to_sheet(applications);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
             XLSX.writeFile(wb, 'updated_candidates.xlsx');
+            showToast('💾 File saved successfully as "updated_candidates.xlsx"', 'success');
           });          function handleFile(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -407,6 +716,10 @@
                 return app;
               });
                 applyFilter();
+                
+                // Show success toast
+                showToast(`📁 File loaded successfully! Found ${applications.length} candidates`, 'success');
+                
               // update file name display
               const fileInput = document.getElementById('fileInput');
               const fileNameEl = document.getElementById('fileName');
@@ -471,6 +784,7 @@
               approveBtn.disabled = candidate['shortlisted'] === 'TRUE';
               approveBtn.onclick = function() {
                 candidate['shortlisted'] = 'TRUE';
+                showToast('✅ Candidate approved and shortlisted!', 'success');
                 applyFilter(appIndex);
               };
               btnGroup.appendChild(approveBtn);
@@ -481,6 +795,7 @@
               rejectBtn.disabled = candidate['shortlisted'] !== 'TRUE';
               rejectBtn.onclick = function() {
                 candidate['shortlisted'] = 'FALSE';
+                showToast('❌ Candidate rejected and removed from shortlist', 'error');
                 applyFilter(appIndex);
               };
               btnGroup.appendChild(rejectBtn);
@@ -529,6 +844,17 @@
           }
 
           function handleFilter() {
+            const filter = document.getElementById('filterSelect').value;
+            const filterMessages = {
+              'all': '📋 Showing all candidates',
+              'approved': '✅ Showing only approved candidates',
+              'rejected': '❌ Showing only rejected candidates'
+            };
+            
+            if (filterMessages[filter]) {
+              showToast(filterMessages[filter], 'info');
+            }
+            
             applyFilter();
           }
 
