@@ -402,9 +402,29 @@
       transition: all 0.3s ease;
     }
     
-    .help-button:hover {
+    .patch-button {
+      position: absolute;
+      top: 20px;
+      right: 150px;
+      background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .help-button:hover, .patch-button:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(187, 134, 252, 0.4);
+    }
+    
+    .patch-button:hover {
+      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
     }
     
     .instruction-section {
@@ -452,6 +472,13 @@
         font-size: 0.8rem;
       }
       
+      .patch-button {
+        top: 50px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+      
       .toast {
         min-width: 280px;
         margin: 0 10px;
@@ -462,6 +489,7 @@
     <body>
       <div class="main-container">
           <button id="helpBtn" class="help-button">❓ How to Use</button>
+          <button id="patchBtn" class="patch-button">📋 Patch Notes</button>
           <div class="header-container">
             <img src="logo.png" alt="Logo" class="logo" />
             <h1>
@@ -614,6 +642,95 @@
           </div>
         </div>
 
+        <!-- Patch Notes Modal -->
+        <div id="patchModal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 class="modal-title">📋 Patch Notes & Version History</h2>
+              <button class="close" id="closePatchModal">&times;</button>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>🚀 Version 1.4 - Advanced Download Features</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">Latest Release - September 2025</p>
+              <ul>
+                <li><strong>📊 Export Approved Only:</strong> Download Excel file with only shortlisted candidates</li>
+                <li><strong>📧 VCard Contact Export:</strong> Generate .vcf file for approved candidates' contact info</li>
+                <li><strong>🧠 Smart Field Detection:</strong> Automatically detects Name, Email, Phone, Organization fields</li>
+                <li><strong>📱 Cross-Platform Contacts:</strong> VCard works with iPhone, Android, Outlook, Gmail</li>
+                <li><strong>📝 Professional Notes:</strong> Each contact includes recruitment context</li>
+                <li><strong>🎯 Enhanced Validation:</strong> Proper error handling for all download actions</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>📢 Version 1.3 - Help System & Toast Notifications</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 2025</p>
+              <ul>
+                <li><strong>❓ How to Use Modal:</strong> Comprehensive instructions modal with detailed guidance</li>
+                <li><strong>🍞 Toast Notifications:</strong> 5-second auto-dismiss feedback system</li>
+                <li><strong>✅ Action Feedback:</strong> Success/error toasts for approve, reject, filter actions</li>
+                <li><strong>📱 Responsive Modal:</strong> Mobile-optimized help system</li>
+                <li><strong>⌨️ Keyboard Shortcuts:</strong> Escape key and click-outside to close modals</li>
+                <li><strong>🎨 Enhanced UX:</strong> Professional animations and smooth transitions</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>🎨 Version 1.2 - Responsive Design & Visibility</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 2025</p>
+              <ul>
+                <li><strong>📱 Viewport Meta Tag:</strong> Critical mobile responsiveness fix</li>
+                <li><strong>⚫ Pitch Black Background:</strong> Maximum contrast design (#000000)</li>
+                <li><strong>🔍 Search Bar Visibility:</strong> Light gray background with white text</li>
+                <li><strong>📋 Form Control Enhancement:</strong> Better visibility for all input fields</li>
+                <li><strong>📂 File Picker Improvements:</strong> Enhanced contrast and mobile layout</li>
+                <li><strong>🎯 Touch Targets:</strong> 44px minimum height for mobile accessibility</li>
+                <li><strong>📐 Responsive Breakpoints:</strong> Desktop, tablet, mobile, small mobile</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>🏗️ Version 1.1 - Core Functionality</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 2025</p>
+              <ul>
+                <li><strong>📤 File Upload System:</strong> Excel (.xlsx/.xls) file support with drag & drop</li>
+                <li><strong>👥 Candidate Navigation:</strong> Previous/Next buttons with keyboard support</li>
+                <li><strong>✅ Approve/Reject System:</strong> Shortlisting workflow with status tracking</li>
+                <li><strong>🔍 Search Functionality:</strong> Real-time keyword search across all fields</li>
+                <li><strong>📊 Filter Options:</strong> Show All/Approved/Rejected candidate views</li>
+                <li><strong>💾 Save System:</strong> Export updated Excel with shortlist decisions</li>
+                <li><strong>📈 Live Counters:</strong> Real-time shortlisted/not shortlisted tracking</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>🌟 Version 1.0 - Initial Release</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 2025</p>
+              <ul>
+                <li><strong>🎨 Dark Theme UI:</strong> Professional dark theme with purple accents</li>
+                <li><strong>📋 Basic Layout:</strong> Header with logo, file picker, and navigation</li>
+                <li><strong>📊 Excel Integration:</strong> Basic Excel file reading and processing</li>
+                <li><strong>📱 Bootstrap Framework:</strong> Responsive grid system foundation</li>
+                <li><strong>🎯 Core Structure:</strong> HTML, CSS, JavaScript foundation</li>
+                <li><strong>🏷️ MIC Branding:</strong> Microsoft Innovation Center recruitment theme</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>🔮 Coming Soon</h3>
+              <ul>
+                <li><strong>📊 Analytics Dashboard:</strong> Recruitment statistics and insights</li>
+                <li><strong>🔄 Bulk Operations:</strong> Mass approve/reject functionality</li>
+                <li><strong>🏷️ Custom Tags:</strong> Candidate categorization system</li>
+                <li><strong>💬 Comments System:</strong> Add notes to candidate profiles</li>
+                <li><strong>🔗 Integration APIs:</strong> Connect with external HR systems</li>
+                <li><strong>🎨 Theme Customization:</strong> Multiple color schemes</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <!-- Toast Container -->
         <div id="toastContainer" class="toast-container"></div>
 
@@ -670,8 +787,32 @@
 
           // Close modal with Escape key
           document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal.style.display === 'block') {
+            if (e.key === 'Escape' && (modal.style.display === 'block' || patchModal.style.display === 'block')) {
               modal.style.display = 'none';
+              patchModal.style.display = 'none';
+              document.body.style.overflow = 'auto';
+            }
+          });
+
+          // Patch Notes Modal functionality
+          const patchModal = document.getElementById('patchModal');
+          const patchBtn = document.getElementById('patchBtn');
+          const closePatchBtn = document.getElementById('closePatchModal');
+
+          patchBtn.addEventListener('click', () => {
+            patchModal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+          });
+
+          closePatchBtn.addEventListener('click', () => {
+            patchModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+          });
+
+          // Close patch modal when clicking outside
+          window.addEventListener('click', (e) => {
+            if (e.target === patchModal) {
+              patchModal.style.display = 'none';
               document.body.style.overflow = 'auto';
             }
           });
