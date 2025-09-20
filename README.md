@@ -187,16 +187,16 @@ recruitmentats/
 - 🔧 **Recent Activity Fix**: Proper candidate name and registration number display
 - 📝 **Enhanced Field Detection**: Uses exact field names from source documents
 
-### v1.63 *(December 2024)*
+### v1.63 
 - 🏷️ **Enhanced Tag Management**: Individual tag removal with X buttons
 - 👀 **Live Tag Preview**: Real-time visual feedback while typing
 - ⌨️ **Smart Tag Formatting**: Tab key for auto-formatting
 
-### v1.62 *(November 2024)*
+### v1.62 
 - ⌨️ **Keyboard Shortcuts**: Quick actions with 1, 2, 3 keys
 - 🧭 **Enhanced Navigation**: Arrow key navigation between candidates
 
-### v1.61 *(October 2024)*
+### v1.61 
 - 🔄 **Counter Synchronization**: Fixed pending counter consistency
 - 📊 **Analytics Improvements**: Better metric accuracy
 
@@ -227,7 +227,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Having issues? Need help?
 
-- 📧 **Email**: [your-email@domain.com] *(Replace with your actual email)*
+- 📧 **Email**: [Personal](sravan.kowshik@outlook.com) , [College Email](sravan.kowsik2023@vitstudent.ac.in) *(Replace with your actual email)*
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/sravannotshravan/recruitmentats/issues)
 - 💡 **Feature Requests**: [GitHub Discussions](https://github.com/sravannotshravan/recruitmentats/discussions)
 
