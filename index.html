@@ -941,6 +941,54 @@
             let filteredIndexes = [];
             let currentIndex = 0;
 
+          // Tag Library System
+          let tagLibrary = new Map(); // stores tag name -> {color, usage count}
+          
+          // Predefined color palette for tags
+          const tagColors = [
+            '#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6f42c1',
+            '#fd7e14', '#20c997', '#e83e8c', '#6610f2', '#007bff',
+            '#6c757d', '#198754', '#0dcaf0', '#f8f9fa', '#212529',
+            '#495057', '#adb5bd', '#ced4da', '#dee2e6', '#e9ecef'
+          ];
+
+          function addToTagLibrary(tagName, color = null) {
+            if (!tagName || tagName.trim() === '') return;
+            
+            const cleanTag = tagName.trim().toLowerCase();
+            if (tagLibrary.has(cleanTag)) {
+              // Increment usage count
+              const tagData = tagLibrary.get(cleanTag);
+              tagData.usageCount++;
+              if (color) tagData.color = color; // Update color if provided
+            } else {
+              // Add new tag with auto-assigned or provided color
+              const assignedColor = color || tagColors[tagLibrary.size % tagColors.length];
+              tagLibrary.set(cleanTag, {
+                color: assignedColor,
+                usageCount: 1,
+                displayName: tagName.trim() // Keep original case for display
+              });
+            }
+          }
+
+          function getTagColor(tagName) {
+            const cleanTag = tagName.trim().toLowerCase();
+            if (tagLibrary.has(cleanTag)) {
+              return tagLibrary.get(cleanTag).color;
+            }
+            // Auto-assign color for new tags
+            addToTagLibrary(tagName);
+            return tagLibrary.get(cleanTag).color;
+          }
+
+          function getPopularTags(limit = 10) {
+            return Array.from(tagLibrary.entries())
+              .sort(([,a], [,b]) => b.usageCount - a.usageCount)
+              .slice(0, limit)
+              .map(([name, data]) => ({name: data.displayName, color: data.color, count: data.usageCount}));
+          }
+
           // Toast notification system
           function showToast(message, type = 'info', duration = 5000) {
             const toastContainer = document.getElementById('toastContainer');
@@ -1257,12 +1305,7 @@
             }
             
             const tagsHtml = tags.map(tag => {
-              const colors = [
-                '#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6f42c1',
-                '#fd7e14', '#20c997', '#e83e8c', '#6610f2', '#007bff'
-              ];
-              const colorIndex = tag.length % colors.length;
-              const bgColor = colors[colorIndex];
+              const bgColor = getTagColor(tag);
               
               return `<span style="
                 display: inline-block;
@@ -1273,6 +1316,7 @@
                 font-size: 0.8rem;
                 font-weight: 500;
                 margin: 2px 4px 2px 0;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.2);
               ">${tag}</span>`;
             }).join('');
             
@@ -1436,6 +1480,16 @@
                 if (!('tags' in app)) app['tags'] = '';
                 return app;
               });
+              
+                // Initialize tag library from existing tags
+                tagLibrary.clear();
+                applications.forEach(app => {
+                  if (app.tags && app.tags.trim()) {
+                    const tags = app.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+                    tags.forEach(tag => addToTagLibrary(tag));
+                  }
+                });
+                
                 applyFilter();
                 
                 // Show success toast
@@ -1525,13 +1579,101 @@
                 tagsInputArea.style.display = 'none';
                 tagsInputArea.style.marginTop = '8px';
                 
+                // Popular tags section
+                const popularTagsSection = document.createElement('div');
+                popularTagsSection.style.marginBottom = '10px';
+                
+                const popularTagsLabel = document.createElement('div');
+                popularTagsLabel.innerHTML = '<small style="color: #bb86fc; font-weight: 600;">🔥 Popular Tags (click to add):</small>';
+                popularTagsSection.appendChild(popularTagsLabel);
+                
+                const popularTagsContainer = document.createElement('div');
+                popularTagsContainer.style.marginTop = '5px';
+                popularTagsContainer.style.maxHeight = '80px';
+                popularTagsContainer.style.overflowY = 'auto';
+                
+                // Update popular tags display
+                function updatePopularTagsDisplay() {
+                  popularTagsContainer.innerHTML = '';
+                  const popularTags = getPopularTags(15);
+                  
+                  if (popularTags.length === 0) {
+                    popularTagsContainer.innerHTML = '<small style="color: #888;">No tags used yet. Add some tags to see them here!</small>';
+                    return;
+                  }
+                  
+                  popularTags.forEach(tag => {
+                    const tagBtn = document.createElement('button');
+                    tagBtn.className = 'btn btn-sm me-1 mb-1';
+                    tagBtn.style.background = tag.color;
+                    tagBtn.style.color = 'white';
+                    tagBtn.style.border = 'none';
+                    tagBtn.style.fontSize = '0.75rem';
+                    tagBtn.innerHTML = `${tag.name} <span style="opacity: 0.7;">(${tag.count})</span>`;
+                    
+                    tagBtn.addEventListener('click', function() {
+                      const currentTags = tagsInput.value.split(',').map(t => t.trim()).filter(t => t);
+                      if (!currentTags.includes(tag.name)) {
+                        currentTags.push(tag.name);
+                        tagsInput.value = currentTags.join(', ');
+                      }
+                    });
+                    
+                    popularTagsContainer.appendChild(tagBtn);
+                  });
+                }
+                
+                popularTagsSection.appendChild(popularTagsContainer);
+                
                 const tagsInput = document.createElement('input');
                 tagsInput.type = 'text';
-                tagsInput.className = 'form-control';
-                tagsInput.placeholder = 'Add tags (comma-separated)...';
+                tagsInput.className = 'form-control mb-2';
+                tagsInput.placeholder = 'Add tags (comma-separated) or click popular tags above...';
                 tagsInput.style.background = '#3a3a3a';
                 tagsInput.style.border = '1px solid #bb86fc';
                 tagsInput.style.color = '#ffffff';
+                
+                // Color picker section
+                const colorPickerSection = document.createElement('div');
+                colorPickerSection.className = 'mb-2';
+                
+                const colorPickerLabel = document.createElement('div');
+                colorPickerLabel.innerHTML = '<small style="color: #bb86fc; font-weight: 600;">🎨 Choose colors for new tags:</small>';
+                colorPickerSection.appendChild(colorPickerLabel);
+                
+                const colorPalette = document.createElement('div');
+                colorPalette.style.display = 'flex';
+                colorPalette.style.flexWrap = 'wrap';
+                colorPalette.style.gap = '4px';
+                colorPalette.style.marginTop = '5px';
+                
+                let selectedColor = tagColors[0]; // Default color
+                
+                tagColors.forEach((color, index) => {
+                  const colorBtn = document.createElement('button');
+                  colorBtn.type = 'button';
+                  colorBtn.style.width = '20px';
+                  colorBtn.style.height = '20px';
+                  colorBtn.style.backgroundColor = color;
+                  colorBtn.style.border = index === 0 ? '2px solid #fff' : '1px solid #666';
+                  colorBtn.style.borderRadius = '3px';
+                  colorBtn.style.cursor = 'pointer';
+                  colorBtn.title = `Color ${index + 1}`;
+                  
+                  colorBtn.addEventListener('click', function() {
+                    // Remove selection from all color buttons
+                    colorPalette.querySelectorAll('button').forEach(btn => {
+                      btn.style.border = '1px solid #666';
+                    });
+                    // Select this color
+                    colorBtn.style.border = '2px solid #fff';
+                    selectedColor = color;
+                  });
+                  
+                  colorPalette.appendChild(colorBtn);
+                });
+                
+                colorPickerSection.appendChild(colorPalette);
                 
                 const tagsButtons = document.createElement('div');
                 tagsButtons.className = 'd-flex gap-2 mt-2';
@@ -1546,7 +1688,10 @@
                 
                 tagsButtons.appendChild(saveTagsBtn);
                 tagsButtons.appendChild(cancelTagsBtn);
+                
+                tagsInputArea.appendChild(popularTagsSection);
                 tagsInputArea.appendChild(tagsInput);
+                tagsInputArea.appendChild(colorPickerSection);
                 tagsInputArea.appendChild(tagsButtons);
                 
                 tagsContainer.appendChild(tagsDisplay);
@@ -1557,12 +1702,26 @@
                   if (e.target === tagsContainer || e.target === tagsDisplay) {
                     tagsInputArea.style.display = 'block';
                     tagsInput.value = candidate.tags || '';
+                    updatePopularTagsDisplay(); // Refresh popular tags
                     tagsInput.focus();
                   }
                 });
                 
                 saveTagsBtn.addEventListener('click', function() {
                   const newTags = tagsInput.value.trim();
+                  
+                  // Add new tags to library with selected color
+                  if (newTags) {
+                    const tagArray = newTags.split(',').map(tag => tag.trim()).filter(tag => tag);
+                    tagArray.forEach(tag => {
+                      if (!tagLibrary.has(tag.toLowerCase())) {
+                        addToTagLibrary(tag, selectedColor);
+                      } else {
+                        addToTagLibrary(tag); // Just increment usage count
+                      }
+                    });
+                  }
+                  
                   candidate.tags = newTags;
                   updateTagsDisplay(appIndex, newTags);
                   tagsInputArea.style.display = 'none';
