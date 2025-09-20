@@ -638,6 +638,12 @@
             <button id="prevBtn" class="btn btn-secondary" disabled>⬅ Previous</button>
             <button id="nextBtn" class="btn btn-primary" disabled>Next ➡</button>
           </div>
+          
+          <!-- Keyboard Shortcuts Hint -->
+          <div class="text-center mb-2" style="font-size: 0.85rem; color: #888;">
+            ⌨️ Shortcuts: <span style="color: #28a745;">1</span> Approve | <span style="color: #dc3545;">2</span> Reject | <span style="color: #ffc107;">3</span> Pending | <span style="color: #bb86fc;">← →</span> Navigate
+          </div>
+          
           <div class="footer">Made with <span style="color:#bb86fc;">♥</span> for recruitment teams</div>
         </div>
 
@@ -754,10 +760,22 @@
             </div>
             
             <div class="instruction-section">
+              <h3>⌨️ Keyboard Shortcuts</h3>
+              <ul>
+                <li><strong>Navigation:</strong> ← → (Arrow keys) to move between candidates</li>
+                <li><strong>Quick Decisions:</strong> 1 (Approve), 2 (Reject), 3 (Pending Review)</li>
+                <li><strong>Auto-Pending:</strong> Navigating away automatically marks unreviewed candidates as pending</li>
+                <li><strong>Smart Actions:</strong> Toast notifications confirm all keyboard actions</li>
+                <li><strong>No Conflicts:</strong> Shortcuts disabled when typing in input fields</li>
+              </ul>
+            </div>
+
+            <div class="instruction-section">
               <h3>📱 Mobile & Responsive</h3>
               <ul>
                 <li><strong>Touch Friendly:</strong> Optimized for mobile and tablet use</li>
-                <li><strong>Swipe Navigation:</strong> Use arrow keys or buttons to navigate</li>
+                <li><strong>Keyboard Navigation:</strong> Use arrow keys or buttons to navigate between candidates</li>
+                <li><strong>Quick Actions:</strong> Press 1 (Approve), 2 (Reject), or 3 (Pending Review) for instant decisions</li>
                 <li><strong>Responsive Design:</strong> Works on all screen sizes</li>
                 <li><strong>Dark Theme:</strong> Easy on eyes during long review sessions</li>
               </ul>
@@ -773,6 +791,19 @@
               <button class="close" id="closePatchModal">&times;</button>
             </div>
             
+            <div class="instruction-section">
+              <h3>⌨️ Version 1.62 - Navigation & Keyboard Shortcuts</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
+              <ul>
+                <li><strong>🎯 Auto-Pending Navigation:</strong> Next/Previous buttons automatically mark unreviewed candidates as pending</li>
+                <li><strong>⌨️ Keyboard Shortcuts:</strong> Press 1 (Approve), 2 (Reject), 3 (Pending Review) for instant decisions</li>
+                <li><strong>🔄 Enhanced Arrow Navigation:</strong> Left/Right arrow keys now use auto-pending logic</li>
+                <li><strong>📊 Improved File Loading:</strong> Shows pending count when loading new files</li>
+                <li><strong>💡 Visual Shortcuts Guide:</strong> Keyboard shortcuts displayed below navigation buttons</li>
+                <li><strong>🎮 Better UX:</strong> Toast notifications confirm keyboard shortcut actions</li>
+              </ul>
+            </div>
+
             <div class="instruction-section">
               <h3>🔧 Version 1.6.041 - Counter & Analytics Fix</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
@@ -1359,10 +1390,28 @@
               clearFileBtn.style.display = 'inline-block';
             }
           });
-          document.getElementById('nextBtn').addEventListener('click', () => showCandidate(currentIndex + 1));
-          document.getElementById('prevBtn').addEventListener('click', () => showCandidate(currentIndex - 1));
-          document.getElementById('nextBtnTop').addEventListener('click', () => showCandidate(currentIndex + 1));
-          document.getElementById('prevBtnTop').addEventListener('click', () => showCandidate(currentIndex - 1));
+          // Navigation Functions with Auto-Pending
+          function navigateToCandidate(newIndex) {
+            if (filteredIndexes.length === 0) return;
+            if (newIndex < 0 || newIndex >= filteredIndexes.length) return;
+            
+            // Mark current candidate as pending if not yet decided
+            if (currentIndex >= 0 && currentIndex < filteredIndexes.length) {
+              const currentAppIndex = filteredIndexes[currentIndex];
+              const currentCandidate = applications[currentAppIndex];
+              if (currentCandidate && !currentCandidate.shortlisted) {
+                currentCandidate.shortlisted = 'PENDING';
+                updateShortlistCounter();
+              }
+            }
+            
+            showCandidate(newIndex);
+          }
+
+          document.getElementById('nextBtn').addEventListener('click', () => navigateToCandidate(currentIndex + 1));
+          document.getElementById('prevBtn').addEventListener('click', () => navigateToCandidate(currentIndex - 1));
+          document.getElementById('nextBtnTop').addEventListener('click', () => navigateToCandidate(currentIndex + 1));
+          document.getElementById('prevBtnTop').addEventListener('click', () => navigateToCandidate(currentIndex - 1));
           document.getElementById('searchInput').addEventListener('input', handleSearch);
           document.addEventListener('keydown', handleArrowKeys);
           document.getElementById('filterSelect').addEventListener('change', handleFilter);
@@ -1478,8 +1527,9 @@
                 
                 applyFilter();
                 
-                // Show success toast
-                showToast(`📁 File loaded successfully! Found ${applications.length} candidates`, 'success');
+                // Show success toast with pending count
+                const pendingCount = applications.filter(app => app.shortlisted === 'PENDING').length;
+                showToast(`📁 File loaded successfully! Found ${applications.length} candidates (${pendingCount} pending review)`, 'success');
                 
                 // Show bulk operations panel
                 showBulkOperations();
@@ -1848,10 +1898,41 @@
 
           function handleArrowKeys(e) {
               if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+              
+              // Arrow key navigation
               if (e.key === 'ArrowLeft') {
-                showCandidate(currentIndex - 1);
+                navigateToCandidate(currentIndex - 1);
               } else if (e.key === 'ArrowRight') {
-                showCandidate(currentIndex + 1);
+                navigateToCandidate(currentIndex + 1);
+              }
+              
+              // Keyboard shortcuts for candidate actions
+              if (filteredIndexes.length > 0 && currentIndex >= 0 && currentIndex < filteredIndexes.length) {
+                const appIndex = filteredIndexes[currentIndex];
+                const candidate = applications[appIndex];
+                
+                if (e.key === '1') {
+                  // Approve candidate
+                  e.preventDefault();
+                  candidate.shortlisted = 'TRUE';
+                  updateShortlistCounter();
+                  showCandidate(currentIndex); // Refresh view
+                  showToast('✅ Candidate approved (Shortcut: 1)', 'success');
+                } else if (e.key === '2') {
+                  // Reject candidate
+                  e.preventDefault();
+                  candidate.shortlisted = 'FALSE';
+                  updateShortlistCounter();
+                  showCandidate(currentIndex); // Refresh view
+                  showToast('❌ Candidate rejected (Shortcut: 2)', 'error');
+                } else if (e.key === '3') {
+                  // Set to pending
+                  e.preventDefault();
+                  candidate.shortlisted = 'PENDING';
+                  updateShortlistCounter();
+                  showCandidate(currentIndex); // Refresh view
+                  showToast('⏳ Candidate set to pending review (Shortcut: 3)', 'info');
+                }
               }
           }
 
