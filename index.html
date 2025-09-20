@@ -792,6 +792,17 @@
             </div>
             
             <div class="instruction-section">
+              <h3>🔧 Version 1.63.1 - Recent Activity Fix</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
+              <ul>
+                <li><strong>🔍 Fixed Recent Activity Display:</strong> Now properly shows candidate Name and RegistrationNumber instead of "unknown"</li>
+                <li><strong>📝 Enhanced Candidate Info:</strong> Displays registration numbers when available for better identification</li>
+                <li><strong>🎯 Smart Field Detection:</strong> Supports multiple field name patterns (Name, RegistrationNumber, RegNo, ID, etc.)</li>
+                <li><strong>💡 Better Formatting:</strong> Shows "Name (RegNo)" format when both fields are available</li>
+              </ul>
+            </div>
+
+            <div class="instruction-section">
               <h3>🏷️ Version 1.63 - Enhanced Tag Management</h3>
               <p style="color: #aaa; font-size: 0.9rem;">December 2024</p>
               <ul>
@@ -1225,8 +1236,15 @@
                 const status = app.shortlisted === 'TRUE' ? 
                   '<span style="color: #28a745;">✅ Approved</span>' : 
                   '<span style="color: #dc3545;">❌ Rejected</span>';
-                const name = app.name || 'Unknown';
-                return `<div style="margin-bottom: 8px; padding: 8px; background: #2a2a2a; border-radius: 5px;">${status} - ${name}</div>`;
+                
+                // Use exact field names from source document: Name and RegistrationNumber
+                const name = app.Name || app.name || app['Full Name'] || app['Candidate Name'] || 'Unknown Candidate';
+                const regNo = app.RegistrationNumber || app.RegNo || app['Registration Number'] || app.ID || '';
+                
+                // Format the display - show name and registration number if available
+                const candidateInfo = regNo ? `${name} (${regNo})` : name;
+                
+                return `<div style="margin-bottom: 8px; padding: 8px; background: #2a2a2a; border-radius: 5px;">${status} - <strong>${candidateInfo}</strong></div>`;
               })
               .join('');
             
