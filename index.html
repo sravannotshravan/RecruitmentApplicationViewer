@@ -566,6 +566,7 @@
               <option value="all">Show All</option>
               <option value="approved">Show Approved</option>
               <option value="rejected">Show Rejected</option>
+              <option value="pending">Show Pending Review</option>
             </select>
           </div>
 
@@ -574,15 +575,19 @@
             <span id="filterStatusText" style="color:#bb86fc;font-weight:600;font-size:1.1rem;">Showing all 0 candidates</span>
           </div>          
 
-          <!-- Shortlist counter cards -->
-          <div class="d-flex gap-3 mb-3">
+          <!-- Status counter cards -->
+          <div class="d-flex gap-2 mb-3">
             <div class="card flex-fill" style="background:linear-gradient(135deg, #28a745, #20c997);text-align:center;border:2px solid #28a745;">
-              <span style="font-weight:600;color:#fff;">Shortlisted</span><br>
-              <span id="shortlistedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
+              <span style="font-weight:600;color:#fff;">✅ Approved</span><br>
+              <span id="approvedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
             </div>
             <div class="card flex-fill" style="background:linear-gradient(135deg, #dc3545, #e74c3c);text-align:center;border:2px solid #dc3545;">
-              <span style="font-weight:600;color:#fff;">Not Shortlisted</span><br>
-              <span id="notShortlistedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
+              <span style="font-weight:600;color:#fff;">❌ Rejected</span><br>
+              <span id="rejectedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
+            </div>
+            <div class="card flex-fill" style="background:linear-gradient(135deg, #ffc107, #fd7e14);text-align:center;border:2px solid #ffc107;">
+              <span style="font-weight:600;color:#000;">⏳ Pending</span><br>
+              <span id="pendingReviewCount" style="color:#000;font-weight:bold;font-size:1.8rem;">0</span>
             </div>
           </div>
 <!-- Top navigation buttons -->
@@ -684,8 +689,8 @@
                 <li><strong>Select All:</strong> Check "Select All Visible" to select all current candidates</li>
                 <li><strong>Bulk Approve:</strong> Click "✅ Approve Selected" to approve multiple candidates at once</li>
                 <li><strong>Bulk Reject:</strong> Click "❌ Reject Selected" to reject multiple candidates at once</li>
-                <li><strong>Status Tracking:</strong> See live counts of shortlisted/not shortlisted</li>
-                <li><strong>Filter View:</strong> Use dropdown to show "All", "Approved", or "Rejected" only</li>
+                <li><strong>Status Tracking:</strong> See live counts of approved/rejected/pending review</li>
+                <li><strong>Filter View:</strong> Use dropdown to show "All", "Approved", "Rejected", or "Pending Review" only</li>
               </ul>
             </div>
             
@@ -769,6 +774,19 @@
             </div>
             
             <div class="instruction-section">
+              <h3>🔧 Version 1.6.04 - Status Tracking Fix</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
+              <ul>
+                <li><strong>✅ Fixed Analytics Dashboard:</strong> Resolved inconsistent status values causing empty analytics</li>
+                <li><strong>⏳ Added Pending Review Status:</strong> All new applications start as "Pending Review"</li>
+                <li><strong>🎯 Auto-Reject Navigation:</strong> Skipping candidates automatically marks them as rejected</li>
+                <li><strong>📊 Three-Status System:</strong> Complete tracking of Approved/Rejected/Pending candidates</li>
+                <li><strong>🔄 Reset to Pending:</strong> Option to reset decided candidates back to pending review</li>
+                <li><strong>📈 Enhanced UI:</strong> Updated counters and filters to show all three status types</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
               <h3>� Version 1.6.01 - Enhanced Documentation</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
               <ul>
@@ -844,9 +862,10 @@
                 <li><strong>👥 Candidate Navigation:</strong> Previous/Next buttons with keyboard support</li>
                 <li><strong>✅ Approve/Reject System:</strong> Shortlisting workflow with status tracking</li>
                 <li><strong>🔍 Search Functionality:</strong> Real-time keyword search across all fields</li>
-                <li><strong>📊 Filter Options:</strong> Show All/Approved/Rejected candidate views</li>
+                <li><strong>📊 Filter Options:</strong> Show All/Approved/Rejected/Pending Review candidate views</li>
                 <li><strong>💾 Save System:</strong> Export updated Excel with shortlist decisions</li>
-                <li><strong>📈 Live Counters:</strong> Real-time shortlisted/not shortlisted tracking</li>
+                <li><strong>🎯 Auto-Reject:</strong> Skipping candidates automatically marks them as rejected</li>
+                <li><strong>📈 Live Counters:</strong> Real-time approved/rejected/pending tracking</li>
               </ul>
             </div>
             
@@ -1130,9 +1149,9 @@
             }
 
             const total = applications.length;
-            const approved = applications.filter(app => app.shortlisted === 'Yes').length;
-            const rejected = applications.filter(app => app.shortlisted === 'No').length;
-            const pending = total - approved - rejected;
+            const approved = applications.filter(app => app.shortlisted === 'TRUE').length;
+            const rejected = applications.filter(app => app.shortlisted === 'FALSE').length;
+            const pending = applications.filter(app => !app.shortlisted || app.shortlisted === 'PENDING').length;
             const reviewed = approved + rejected;
             
             // Update summary stats
@@ -1190,11 +1209,11 @@
             
             // Recent activity (show last 10 status changes)
             const recentActivities = applications
-              .filter(app => app.shortlisted === 'Yes' || app.shortlisted === 'No')
+              .filter(app => app.shortlisted === 'TRUE' || app.shortlisted === 'FALSE')
               .slice(-10)
               .reverse()
               .map(app => {
-                const status = app.shortlisted === 'Yes' ? 
+                const status = app.shortlisted === 'TRUE' ? 
                   '<span style="color: #28a745;">✅ Approved</span>' : 
                   '<span style="color: #dc3545;">❌ Rejected</span>';
                 const name = app.name || 'Unknown';
@@ -1269,7 +1288,7 @@
             
             selectedCandidates.forEach(appIndex => {
               if (applications[appIndex]) {
-                applications[appIndex].shortlisted = 'Yes';
+                applications[appIndex].shortlisted = 'TRUE';
               }
             });
             
@@ -1287,7 +1306,7 @@
             
             selectedCandidates.forEach(appIndex => {
               if (applications[appIndex]) {
-                applications[appIndex].shortlisted = 'No';
+                applications[appIndex].shortlisted = 'FALSE';
               }
             });
             
@@ -1497,7 +1516,7 @@
 
               // Ensure 'shortlisted' and 'tags' fields exist with defaults
               applications = json.map(app => {
-                if (!('shortlisted' in app)) app['shortlisted'] = 'FALSE';
+                if (!('shortlisted' in app) || app['shortlisted'] === '') app['shortlisted'] = 'PENDING';
                 if (!('tags' in app)) app['tags'] = '';
                 return app;
               });
@@ -1534,6 +1553,16 @@
           function showCandidate(index) {
           if (filteredIndexes.length === 0) return;
           if (index < 0 || index >= filteredIndexes.length) return;
+
+          // Auto-reject current candidate if leaving without decision
+          if (currentIndex !== null && currentIndex !== index && filteredIndexes[currentIndex] !== undefined) {
+            const currentAppIndex = filteredIndexes[currentIndex];
+            const currentApp = applications[currentAppIndex];
+            if (currentApp && currentApp.shortlisted === 'PENDING') {
+              currentApp.shortlisted = 'FALSE';
+              showToast('⏭️ Previous candidate automatically rejected (skipped)', 'info');
+            }
+          }
 
           currentIndex = index;
           const appIndex = filteredIndexes[currentIndex];
@@ -1802,25 +1831,41 @@
 
               const approveBtn = document.createElement('button');
               approveBtn.className = 'btn btn-success flex-fill';
-              approveBtn.textContent = candidate['shortlisted'] === 'TRUE' ? 'Shortlisted' : 'Approve Candidate';
+              approveBtn.textContent = candidate['shortlisted'] === 'TRUE' ? '✅ Approved' : '✅ Approve Candidate';
               approveBtn.disabled = candidate['shortlisted'] === 'TRUE';
               approveBtn.onclick = function() {
                 candidate['shortlisted'] = 'TRUE';
                 showToast('✅ Candidate approved and shortlisted!', 'success');
-                applyFilter(appIndex);
+                updateShortlistCounter();
+                showCandidate(currentIndex); // Refresh view to update button states
               };
               btnGroup.appendChild(approveBtn);
 
               const rejectBtn = document.createElement('button');
               rejectBtn.className = 'btn btn-danger flex-fill';
-              rejectBtn.textContent = 'Reject Candidate';
-              rejectBtn.disabled = candidate['shortlisted'] !== 'TRUE';
+              rejectBtn.textContent = candidate['shortlisted'] === 'FALSE' ? '❌ Rejected' : '❌ Reject Candidate';
+              rejectBtn.disabled = candidate['shortlisted'] === 'FALSE';
               rejectBtn.onclick = function() {
                 candidate['shortlisted'] = 'FALSE';
-                showToast('❌ Candidate rejected and removed from shortlist', 'error');
-                applyFilter(appIndex);
+                showToast('❌ Candidate rejected', 'error');
+                updateShortlistCounter();
+                showCandidate(currentIndex); // Refresh view to update button states
               };
               btnGroup.appendChild(rejectBtn);
+
+              // Add reset button for decided candidates
+              if (candidate['shortlisted'] === 'TRUE' || candidate['shortlisted'] === 'FALSE') {
+                const resetBtn = document.createElement('button');
+                resetBtn.className = 'btn btn-warning flex-fill';
+                resetBtn.textContent = '⏳ Reset to Pending';
+                resetBtn.onclick = function() {
+                  candidate['shortlisted'] = 'PENDING';
+                  showToast('⏳ Candidate reset to pending review', 'info');
+                  updateShortlistCounter();
+                  showCandidate(currentIndex); // Refresh view to update button states
+                };
+                btnGroup.appendChild(resetBtn);
+              }
 
               card.appendChild(btnGroup);
 
@@ -1865,10 +1910,16 @@
           }
 
           function updateShortlistCounter() {
-            const shortlisted = applications.filter(app => app['shortlisted'] === 'TRUE').length;
-            const notShortlisted = applications.filter(app => app['shortlisted'] !== 'TRUE').length;
-            document.getElementById('shortlistedCount').textContent = shortlisted;
-            document.getElementById('notShortlistedCount').textContent = notShortlisted;
+            const approved = applications.filter(app => app['shortlisted'] === 'TRUE').length;
+            const rejected = applications.filter(app => app['shortlisted'] === 'FALSE').length;
+            const pending = applications.filter(app => app['shortlisted'] === 'PENDING').length;
+            
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+            document.getElementById('pendingReviewCount').textContent = pending;
+            
+            // Update analytics dashboard if it's visible
+            updateAnalyticsDashboard();
             
             // Update filter status text
             updateFilterStatusText();
@@ -1879,7 +1930,8 @@
             const filterMessages = {
               'all': '📋 Showing all candidates',
               'approved': '✅ Showing only approved candidates',
-              'rejected': '❌ Showing only rejected candidates'
+              'rejected': '❌ Showing only rejected candidates',
+              'pending': '⏳ Showing only pending review candidates'
             };
             
             if (filterMessages[filter]) {
@@ -1896,7 +1948,9 @@
             } else if (filter === 'approved') {
               filteredIndexes = applications.map((app, idx) => app['shortlisted'] === 'TRUE' ? idx : null).filter(idx => idx !== null);
             } else if (filter === 'rejected') {
-              filteredIndexes = applications.map((app, idx) => app['shortlisted'] !== 'TRUE' ? idx : null).filter(idx => idx !== null);
+              filteredIndexes = applications.map((app, idx) => app['shortlisted'] === 'FALSE' ? idx : null).filter(idx => idx !== null);
+            } else if (filter === 'pending') {
+              filteredIndexes = applications.map((app, idx) => app['shortlisted'] === 'PENDING' ? idx : null).filter(idx => idx !== null);
             }
             // Reset search filter
             const query = document.getElementById('searchInput').value.toLowerCase();
@@ -1930,9 +1984,11 @@
             if (filter === 'all') {
               statusText.textContent = `Showing all ${total} candidates`;
             } else if (filter === 'approved') {
-              statusText.textContent = `Showing all ${total} shortlisted candidates`;
+              statusText.textContent = `Showing all ${total} approved candidates`;
             } else if (filter === 'rejected') {
-              statusText.textContent = `Showing all ${total} not shortlisted candidates`;
+              statusText.textContent = `Showing all ${total} rejected candidates`;
+            } else if (filter === 'pending') {
+              statusText.textContent = `Showing all ${total} pending review candidates`;
             }
           }
 
