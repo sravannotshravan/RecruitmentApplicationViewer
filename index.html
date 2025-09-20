@@ -207,6 +207,16 @@
         min-width: auto;
         width: 100%;
       }
+      /* Download buttons mobile layout */
+      .save-row .d-flex {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+      .save-row .btn {
+        width: 100%;
+        min-width: auto;
+      }
     }
     
     @media (max-width: 480px) {
@@ -506,7 +516,11 @@
           <div class="card mt-3 section-gap" id="card"></div>
 
             <div class="d-flex justify-content-center save-row">
-              <button id="saveBtn" class="btn btn-warning" style="min-width:160px;font-weight:600;">💾 Save Changes</button>
+              <div class="d-flex flex-column flex-md-row gap-2 align-items-center">
+                <button id="saveBtn" class="btn btn-warning" style="min-width:160px;font-weight:600;">💾 Save All Changes</button>
+                <button id="downloadApprovedBtn" class="btn btn-success" style="min-width:160px;font-weight:600;">📊 Export Approved</button>
+                <button id="downloadContactsBtn" class="btn btn-info" style="min-width:160px;font-weight:600;">📧 Download Contacts</button>
+              </div>
             </div>
 
           <div class="controls d-flex justify-content-center nav-buttons">
@@ -564,12 +578,27 @@
             </div>
             
             <div class="instruction-section">
-              <h3>💾 Saving Your Work</h3>
+              <h3>💾 Saving & Exporting Your Work</h3>
               <ul>
-                <li><strong>Save Changes:</strong> Click "💾 Save Changes" to download updated Excel file</li>
-                <li><strong>Preserves Data:</strong> All original data + your shortlist decisions</li>
-                <li><strong>New Column:</strong> Adds "shortlisted" column with TRUE/FALSE values</li>
+                <li><strong>Save All Changes:</strong> Click "💾 Save All Changes" to download complete Excel file with all candidates</li>
+                <li><strong>Export Approved Only:</strong> Click "📊 Export Approved" to download Excel file with only shortlisted candidates</li>
+                <li><strong>Download Contact Cards:</strong> Click "📧 Download Contacts" to get VCard (.vcf) file of approved candidates</li>
+                <li><strong>Contact Integration:</strong> VCard files can be imported into phone contacts, Outlook, Gmail, etc.</li>
+                <li><strong>Preserves Data:</strong> All original data + your shortlist decisions are maintained</li>
+                <li><strong>Smart Field Detection:</strong> Automatically finds Name, Email, Phone, Organization fields</li>
                 <li><strong>Backup Recommended:</strong> Save regularly to avoid losing progress</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>📧 Contact Management</h3>
+              <ul>
+                <li><strong>VCard Format:</strong> Industry-standard contact file format (.vcf)</li>
+                <li><strong>Multi-Contact File:</strong> Single file contains all approved candidates' contacts</li>
+                <li><strong>Auto-Detection:</strong> Finds common field names like "Name", "Email", "Phone", "Mobile", etc.</li>
+                <li><strong>Easy Import:</strong> Double-click .vcf file to add contacts to your address book</li>
+                <li><strong>Cross-Platform:</strong> Works with iPhone, Android, Outlook, Gmail, Apple Contacts</li>
+                <li><strong>Professional Notes:</strong> Each contact includes "Approved candidate from MIC Recruitments 25-26"</li>
               </ul>
             </div>
             
@@ -698,7 +727,79 @@
             XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
             XLSX.writeFile(wb, 'updated_candidates.xlsx');
             showToast('💾 File saved successfully as "updated_candidates.xlsx"', 'success');
-          });          function handleFile(e) {
+          });
+
+          // Download approved candidates only
+          document.getElementById('downloadApprovedBtn').addEventListener('click', function() {
+            const approvedCandidates = applications.filter(app => app['shortlisted'] === 'TRUE');
+            if (approvedCandidates.length === 0) {
+              showToast('⚠️ No approved candidates to export. Please approve some candidates first.', 'error');
+              return;
+            }
+            const ws = XLSX.utils.json_to_sheet(approvedCandidates);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Approved Candidates');
+            XLSX.writeFile(wb, 'approved_candidates.xlsx');
+            showToast(`📊 Exported ${approvedCandidates.length} approved candidates successfully!`, 'success');
+          });
+
+          // Download VCard contacts
+          document.getElementById('downloadContactsBtn').addEventListener('click', function() {
+            const approvedCandidates = applications.filter(app => app['shortlisted'] === 'TRUE');
+            if (approvedCandidates.length === 0) {
+              showToast('⚠️ No approved candidates to export contacts. Please approve some candidates first.', 'error');
+              return;
+            }
+            downloadVCardContacts(approvedCandidates);
+            showToast(`📧 Downloaded contact cards for ${approvedCandidates.length} approved candidates!`, 'success');
+          });
+
+          // VCard generation function
+          function downloadVCardContacts(candidates) {
+            let vCardContent = '';
+            
+            candidates.forEach((candidate, index) => {
+              // Try to find common field names for contact info
+              const name = candidate.Name || candidate.name || candidate['Full Name'] || candidate['Candidate Name'] || `Candidate ${index + 1}`;
+              const email = candidate.Email || candidate.email || candidate['Email Address'] || candidate['Email ID'] || '';
+              const phone = candidate.Phone || candidate.phone || candidate['Mobile'] || candidate['Contact'] || candidate['Phone Number'] || '';
+              const organization = candidate.Organization || candidate.organization || candidate.Company || candidate.company || '';
+              
+              // Generate VCard for each candidate
+              vCardContent += `BEGIN:VCARD\n`;
+              vCardContent += `VERSION:3.0\n`;
+              vCardContent += `FN:${name}\n`;
+              vCardContent += `N:${name};;;;\n`;
+              
+              if (email) {
+                vCardContent += `EMAIL:${email}\n`;
+              }
+              
+              if (phone) {
+                vCardContent += `TEL:${phone}\n`;
+              }
+              
+              if (organization) {
+                vCardContent += `ORG:${organization}\n`;
+              }
+              
+              vCardContent += `NOTE:Approved candidate from MIC Recruitments 25-26\n`;
+              vCardContent += `END:VCARD\n\n`;
+            });
+            
+            // Create and download the VCard file
+            const blob = new Blob([vCardContent], { type: 'text/vcard;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'approved_candidates_contacts.vcf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          }
+
+          function handleFile(e) {
             const file = e.target.files[0];
             if (!file) return;
 
