@@ -792,6 +792,26 @@
             </div>
             
             <div class="instruction-section">
+              <h3>🏷️ Version 1.63 - Enhanced Tag Management</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">December 2024</p>
+              <ul>
+                <li><strong>✨ Individual Tag Removal:</strong> Added clickable X buttons to remove specific tags without editing the entire tag list</li>
+                <li><strong>🎯 Enhanced Tag Input:</strong> Added live preview of tags as you type with visual feedback</li>
+                <li><strong>⌨️ Smart Tag Formatting:</strong> Press Tab to auto-format comma-separated tags with proper spacing</li>
+                <li><strong>👀 Visual Tag Preview:</strong> See exactly how tags will look before saving with color-coded preview</li>
+                <li><strong>🎨 Improved UX:</strong> Better hover effects and visual feedback for tag removal buttons</li>
+                <li><strong>🗑️ Toast Notifications:</strong> Clear feedback when tags are removed with informative messages</li>
+              </ul>
+              <p><strong>Technical Improvements:</strong></p>
+              <ul>
+                <li>Enhanced updateTagsDisplay function with individual tag removal capability</li>
+                <li>Added removeTag function for clean tag deletion</li>
+                <li>Improved tag input with live preview and keyboard shortcuts</li>
+                <li>Better event handling for tag removal with proper click isolation</li>
+              </ul>
+            </div>
+
+            <div class="instruction-section">
               <h3>🔧 Version 1.61 - Pending Counter Synchronization</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
               <ul>
@@ -1333,10 +1353,12 @@
               return;
             }
             
-            const tagsHtml = tags.map(tag => {
+            // Create tag elements with removal buttons
+            tags.forEach(tag => {
               const bgColor = getTagColor(tag);
               
-              return `<span style="
+              const tagElement = document.createElement('span');
+              tagElement.style.cssText = `
                 display: inline-block;
                 background: ${bgColor};
                 color: white;
@@ -1346,10 +1368,65 @@
                 font-weight: 500;
                 margin: 2px 4px 2px 0;
                 box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-              ">${tag}</span>`;
-            }).join('');
+                position: relative;
+                padding-right: 20px;
+              `;
+              
+              // Tag text
+              const tagText = document.createElement('span');
+              tagText.textContent = tag;
+              tagElement.appendChild(tagText);
+              
+              // Remove button
+              const removeBtn = document.createElement('span');
+              removeBtn.innerHTML = '×';
+              removeBtn.style.cssText = `
+                position: absolute;
+                right: 4px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 1rem;
+                opacity: 0.8;
+                padding: 0 2px;
+                border-radius: 50%;
+                transition: all 0.2s;
+              `;
+              
+              // Remove button hover effects
+              removeBtn.addEventListener('mouseenter', () => {
+                removeBtn.style.backgroundColor = 'rgba(255,255,255,0.3)';
+                removeBtn.style.opacity = '1';
+              });
+              
+              removeBtn.addEventListener('mouseleave', () => {
+                removeBtn.style.backgroundColor = 'transparent';
+                removeBtn.style.opacity = '0.8';
+              });
+              
+              // Remove tag functionality
+              removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                removeTag(appIndex, tag);
+              });
+              
+              tagElement.appendChild(removeBtn);
+              tagsDisplay.appendChild(tagElement);
+            });
+          }
+          
+          function removeTag(appIndex, tagToRemove) {
+            const candidate = applications[appIndex];
+            if (!candidate || !candidate.tags) return;
             
-            tagsDisplay.innerHTML = tagsHtml;
+            const currentTags = candidate.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+            const updatedTags = currentTags.filter(tag => tag !== tagToRemove);
+            
+            candidate.tags = updatedTags.join(', ');
+            updateTagsDisplay(appIndex, candidate.tags);
+            
+            showToast(`🗑️ Tag "${tagToRemove}" removed`, 'info');
           }
 
           function filterByTags(searchTags) {
@@ -1691,6 +1768,81 @@
                 tagsInput.style.border = '1px solid #bb86fc';
                 tagsInput.style.color = '#ffffff';
                 
+                // Tag preview area for live feedback
+                const tagPreview = document.createElement('div');
+                tagPreview.style.cssText = `
+                  margin-bottom: 8px;
+                  min-height: 30px;
+                  padding: 5px;
+                  background: rgba(187, 134, 252, 0.1);
+                  border: 1px dashed #bb86fc;
+                  border-radius: 6px;
+                  display: none;
+                `;
+                
+                const tagPreviewLabel = document.createElement('small');
+                tagPreviewLabel.textContent = '👀 Preview:';
+                tagPreviewLabel.style.cssText = 'color: #bb86fc; font-weight: 600; display: block; margin-bottom: 5px;';
+                
+                const tagPreviewContent = document.createElement('div');
+                tagPreviewContent.style.cssText = 'display: flex; flex-wrap: wrap; gap: 4px;';
+                
+                tagPreview.appendChild(tagPreviewLabel);
+                tagPreview.appendChild(tagPreviewContent);
+                
+                // Live preview functionality
+                tagsInput.addEventListener('input', function() {
+                  const value = this.value.trim();
+                  if (value === '') {
+                    tagPreview.style.display = 'none';
+                    return;
+                  }
+                  
+                  const tags = value.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+                  
+                  if (tags.length === 0) {
+                    tagPreview.style.display = 'none';
+                    return;
+                  }
+                  
+                  tagPreview.style.display = 'block';
+                  
+                  tagPreviewContent.innerHTML = '';
+                  tags.forEach(tag => {
+                    const bgColor = getTagColor(tag);
+                    const tagSpan = document.createElement('span');
+                    tagSpan.textContent = tag;
+                    tagSpan.style.cssText = `
+                      display: inline-block;
+                      background: ${bgColor};
+                      color: white;
+                      padding: 2px 6px;
+                      border-radius: 8px;
+                      font-size: 0.75rem;
+                      font-weight: 500;
+                      opacity: 0.9;
+                    `;
+                    tagPreviewContent.appendChild(tagSpan);
+                  });
+                });
+                
+                // Enhanced keyboard shortcuts for tag input
+                tagsInput.addEventListener('keydown', function(e) {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveTagsBtn.click();
+                  } else if (e.key === 'Escape') {
+                    cancelTagsBtn.click();
+                  } else if (e.key === 'Tab' && this.value.includes(',')) {
+                    // Auto-format tags on tab
+                    e.preventDefault();
+                    const formatted = this.value.split(',').map(tag => tag.trim()).filter(tag => tag).join(', ');
+                    this.value = formatted;
+                    // Trigger input event to update preview
+                    this.dispatchEvent(new Event('input'));
+                  }
+                });
+                
                 // Color picker section
                 const colorPickerSection = document.createElement('div');
                 colorPickerSection.className = 'mb-2';
@@ -1749,6 +1901,7 @@
                 
                 tagsInputArea.appendChild(popularTagsSection);
                 tagsInputArea.appendChild(tagsInput);
+                tagsInputArea.appendChild(tagPreview);
                 tagsInputArea.appendChild(colorPickerSection);
                 tagsInputArea.appendChild(tagsButtons);
                 
@@ -1788,16 +1941,6 @@
                 
                 cancelTagsBtn.addEventListener('click', function() {
                   tagsInputArea.style.display = 'none';
-                });
-                
-                // Enter to save, Escape to cancel
-                tagsInput.addEventListener('keydown', function(e) {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    saveTagsBtn.click();
-                  } else if (e.key === 'Escape') {
-                    cancelTagsBtn.click();
-                  }
                 });
                 
                 wrapper.appendChild(label);
