@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recruitment Applications Viewer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      padding: 30px;
+    }
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+    .form-label {
+      font-weight: 600;
+      color: #bb86fc;
+    }
+    .form-control {
+      background-color: #2c2c2c;
+      color: #e0e0e0;
+      border: 1px solid #444;
+    }
+    .form-control:focus {
+      background-color: #333;
+      border-color: #bb86fc;
+      box-shadow: none;
+    }
+    .controls button {
+      min-width: 120px;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    .nav-buttons {
+      gap: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    h1 {
+      color: #bb86fc;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    #searchInput {
+      max-width: 400px;
+      margin: 15px auto;
+      display: block;
+    }
+    .footer {
+      text-align: center;
+      color: #888;
+      margin-top: 18px;
+      font-size: 0.98rem;
+      letter-spacing: 0.5px;
+    }
+    .header-container {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: center;
+      padding-top: 20px;
+      padding-bottom: 8px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 12px auto;
+      width: 96px;
+      height: auto;
+      object-fit: contain;
+    }
+    .mic-gradient {
+      background: linear-gradient(45deg, #f25022 0%, #7fba00 25%, #00a4ef 50%, #ffb900 75%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Mobile and Tablet Responsive Styles */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      .main-container {
+        padding: 20px 15px;
+      }
+      .header-container {
+        padding-left: 20px;
+        padding-top: 10px;
+      }
+      h1 {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+      }
+      .logo {
+        width: 72px;
+      }
+      .card {
+        padding: 15px;
+      }
+      .controls {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .nav-buttons {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .controls button {
+        min-width: auto;
+        width: 100%;
+      }
+      .d-flex.gap-3 {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .form-control {
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
+      #fileInput, #searchInput, #filterSelect {
+        max-width: 100%;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      .main-container {
+        padding: 15px 10px;
+      }
+      h1 {
+        font-size: 1.5rem;
+        line-height: 1.3;
+      }
+      .header-container {
+        padding-left: 12px;
+      }
+      .logo {
+        width: 56px;
+      }
+      .card {
+        padding: 12px;
+        margin-bottom: 15px;
+      }
+      .form-label {
+        font-size: 0.95rem;
+      }
+      .btn {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 14px;
+      }
+      #filterStatusText {
+        font-size: 1rem;
+      }
+    }
+  </style>
+    </head>
+    <body>
+      <div class="main-container">
+          <div class="header-container">
+            <img src="logo.png" alt="Logo" class="logo" />
+            <h1>
+              <span class="mic-gradient">MIC Recruitments</span> 
+              <span style="color:#bb86fc;">25-26 Application Viewer</span>
+            </h1>
+          </div>
+          <!-- Elegant file picker: styled button + dropzone -->
+          <div id="filePicker" class="mb-3" style="max-width:420px;margin:0 auto;">
+            <div id="dropzone" class="d-flex align-items-center justify-content-between" style="border:2px dashed #444;border-radius:10px;padding:12px 14px;background:#171717;"> 
+              <div style="display:flex;gap:12px;align-items:center;">
+                <button id="chooseFileBtn" class="btn btn-outline-primary" style="min-width:140px;">Choose file</button>
+                <div id="fileName" style="color:#bbb;">No file selected</div>
+              </div>
+              <div>
+                <button id="clearFileBtn" class="btn btn-sm btn-light" style="display:none;">Clear</button>
+              </div>
+            </div>
+            <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none;" />
+          </div>
+          <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search by keyword..." />
+
+          <div class="mb-3 d-flex justify-content-center gap-2">
+            <select id="filterSelect" class="form-select" style="max-width:220px;">
+              <option value="all">Show All</option>
+              <option value="approved">Show Approved</option>
+              <option value="rejected">Show Rejected</option>
+            </select>
+          </div>
+
+          <!-- Filter status text -->
+          <div class="text-center mb-3">
+            <span id="filterStatusText" style="color:#bb86fc;font-weight:600;font-size:1.1rem;">Showing all 0 candidates</span>
+          </div>          <!-- Top navigation buttons -->
+          <div class="controls d-flex justify-content-center mb-3 nav-buttons">
+            <button id="prevBtnTop" class="btn btn-secondary" disabled>⬅ Previous</button>
+            <button id="nextBtnTop" class="btn btn-primary" disabled>Next ➡</button>
+          </div>
+
+          <!-- Shortlist counter cards -->
+          <div class="d-flex gap-3 mb-3">
+            <div class="card flex-fill" style="background:linear-gradient(135deg, #28a745, #20c997);text-align:center;border:2px solid #28a745;">
+              <span style="font-weight:600;color:#fff;">Shortlisted</span><br>
+              <span id="shortlistedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
+            </div>
+            <div class="card flex-fill" style="background:linear-gradient(135deg, #dc3545, #e74c3c);text-align:center;border:2px solid #dc3545;">
+              <span style="font-weight:600;color:#fff;">Not Shortlisted</span><br>
+              <span id="notShortlistedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
+            </div>
+          </div>
+
+          <div class="card mt-4" id="card"></div>
+
+            <div class="d-flex justify-content-center mb-3">
+              <button id="saveBtn" class="btn btn-warning" style="min-width:160px;font-weight:600;">💾 Save Changes</button>
+            </div>
+
+          <div class="controls d-flex justify-content-center nav-buttons">
+            <button id="prevBtn" class="btn btn-secondary" disabled>⬅ Previous</button>
+            <button id="nextBtn" class="btn btn-primary" disabled>Next ➡</button>
+          </div>
+          <div class="footer">Made with <span style="color:#bb86fc;">♥</span> for recruitment teams</div>
+        </div>
+
+      <script>
+          let applications = [];
+            let filteredIndexes = [];
+            let currentIndex = 0;
+
+          document.getElementById('fileInput').addEventListener('change', handleFile, false);
+          // New file picker UI wiring
+          const chooseFileBtn = document.getElementById('chooseFileBtn');
+          const dropzone = document.getElementById('dropzone');
+          const fileNameEl = document.getElementById('fileName');
+          const clearFileBtn = document.getElementById('clearFileBtn');
+
+          chooseFileBtn.addEventListener('click', () => document.getElementById('fileInput').click());
+          clearFileBtn.addEventListener('click', () => {
+            document.getElementById('fileInput').value = '';
+            fileNameEl.textContent = 'No file selected';
+            clearFileBtn.style.display = 'none';
+            applications = [];
+            filteredIndexes = [];
+            document.getElementById('card').innerHTML = '';
+            updateShortlistCounter();
+          });
+
+          // Drag and drop
+          dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.borderColor = '#bbb'; });
+          dropzone.addEventListener('dragleave', () => { dropzone.style.borderColor = '#444'; });
+          dropzone.addEventListener('drop', (e) => {
+            e.preventDefault(); dropzone.style.borderColor = '#444';
+            const file = e.dataTransfer.files[0];
+            if (file) {
+              const input = document.getElementById('fileInput');
+              const dt = new DataTransfer();
+              dt.items.add(file);
+              input.files = dt.files;
+              handleFile({ target: input });
+              fileNameEl.textContent = file.name;
+              clearFileBtn.style.display = 'inline-block';
+            }
+          });
+          document.getElementById('nextBtn').addEventListener('click', () => showCandidate(currentIndex + 1));
+          document.getElementById('prevBtn').addEventListener('click', () => showCandidate(currentIndex - 1));
+          document.getElementById('nextBtnTop').addEventListener('click', () => showCandidate(currentIndex + 1));
+          document.getElementById('prevBtnTop').addEventListener('click', () => showCandidate(currentIndex - 1));
+          document.getElementById('searchInput').addEventListener('input', handleSearch);
+          document.addEventListener('keydown', handleArrowKeys);
+          document.getElementById('filterSelect').addEventListener('change', handleFilter);
+          document.getElementById('saveBtn').addEventListener('click', function() {
+            if (applications.length === 0) return;
+            const ws = XLSX.utils.json_to_sheet(applications);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+            XLSX.writeFile(wb, 'updated_candidates.xlsx');
+          });          function handleFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const data = new Uint8Array(e.target.result);
+              const workbook = XLSX.read(data, { type: 'array' });
+              const sheetName = workbook.SheetNames[0];
+              const sheet = workbook.Sheets[sheetName];
+              const json = XLSX.utils.sheet_to_json(sheet);
+
+              // Ensure 'shortlisted' field exists and is FALSE by default
+              applications = json.map(app => {
+                if (!('shortlisted' in app)) app['shortlisted'] = 'FALSE';
+                return app;
+              });
+                applyFilter();
+              // update file name display
+              const fileInput = document.getElementById('fileInput');
+              const fileNameEl = document.getElementById('fileName');
+              const clearFileBtn = document.getElementById('clearFileBtn');
+              if (fileInput.files[0]) {
+                fileNameEl.textContent = fileInput.files[0].name;
+                clearFileBtn.style.display = 'inline-block';
+              }
+            };
+            reader.readAsArrayBuffer(file);
+          }
+
+          function showCandidate(index) {
+          if (filteredIndexes.length === 0) return;
+          if (index < 0 || index >= filteredIndexes.length) return;
+
+          currentIndex = index;
+          const appIndex = filteredIndexes[currentIndex];
+          const card = document.getElementById('card');
+          card.innerHTML = '';
+
+          const candidate = applications[appIndex];
+            for (const key in candidate) {
+              const wrapper = document.createElement('div');
+              wrapper.className = 'mb-3';
+
+              const label = document.createElement('label');
+              label.className = 'form-label';
+              label.textContent = key;
+
+              const textarea = document.createElement('textarea');
+              textarea.className = 'form-control';
+              textarea.rows = 2;
+              textarea.readOnly = true;
+              textarea.value = candidate[key];
+
+              // Add a subtle highlight for important fields
+              if (key.toLowerCase().includes('name') || key.toLowerCase().includes('email')) {
+                textarea.style.background = 'linear-gradient(90deg,#bb86fc22,#232526)';
+                textarea.style.fontWeight = 'bold';
+              }
+
+              // Highlight shortlisted field
+              if (key.toLowerCase() === 'shortlisted') {
+                textarea.style.background = candidate[key] === 'TRUE' ? 'linear-gradient(90deg,#bb86fc88,#232526)' : 'linear-gradient(90deg,#232526,#bb86fc22)';
+                textarea.style.color = candidate[key] === 'TRUE' ? '#fff' : '#e0e0e0';
+                textarea.style.fontWeight = 'bold';
+              }
+
+              wrapper.appendChild(label);
+              wrapper.appendChild(textarea);
+              card.appendChild(wrapper);
+            }
+
+              // Approve/Reject button group
+              const btnGroup = document.createElement('div');
+              btnGroup.className = 'd-flex gap-2 mb-2';
+
+              const approveBtn = document.createElement('button');
+              approveBtn.className = 'btn btn-success flex-fill';
+              approveBtn.textContent = candidate['shortlisted'] === 'TRUE' ? 'Shortlisted' : 'Approve Candidate';
+              approveBtn.disabled = candidate['shortlisted'] === 'TRUE';
+              approveBtn.onclick = function() {
+                candidate['shortlisted'] = 'TRUE';
+                applyFilter(appIndex);
+              };
+              btnGroup.appendChild(approveBtn);
+
+              const rejectBtn = document.createElement('button');
+              rejectBtn.className = 'btn btn-danger flex-fill';
+              rejectBtn.textContent = 'Reject Candidate';
+              rejectBtn.disabled = candidate['shortlisted'] !== 'TRUE';
+              rejectBtn.onclick = function() {
+                candidate['shortlisted'] = 'FALSE';
+                applyFilter(appIndex);
+              };
+              btnGroup.appendChild(rejectBtn);
+
+              card.appendChild(btnGroup);
+
+            document.getElementById('prevBtn').disabled = (currentIndex === 0);
+            document.getElementById('nextBtn').disabled = (currentIndex === filteredIndexes.length - 1);
+            document.getElementById('prevBtnTop').disabled = (currentIndex === 0);
+            document.getElementById('nextBtnTop').disabled = (currentIndex === filteredIndexes.length - 1);
+            updateShortlistCounter();
+          }
+
+          function handleSearch() {
+              const query = document.getElementById('searchInput').value.toLowerCase();
+              if (!query) {
+                applyFilter();
+                return;
+              }
+              // Filter indexes by search
+              filteredIndexes = filteredIndexes.filter(idx => {
+                const app = applications[idx];
+                return Object.values(app).some(val => String(val).toLowerCase().includes(query));
+              });
+              currentIndex = 0;
+              showCandidate(currentIndex);
+          }
+
+          function handleArrowKeys(e) {
+              if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+              if (e.key === 'ArrowLeft') {
+                showCandidate(currentIndex - 1);
+              } else if (e.key === 'ArrowRight') {
+                showCandidate(currentIndex + 1);
+              }
+          }
+
+          function updateShortlistCounter() {
+            const shortlisted = applications.filter(app => app['shortlisted'] === 'TRUE').length;
+            const notShortlisted = applications.filter(app => app['shortlisted'] !== 'TRUE').length;
+            document.getElementById('shortlistedCount').textContent = shortlisted;
+            document.getElementById('notShortlistedCount').textContent = notShortlisted;
+            
+            // Update filter status text
+            updateFilterStatusText();
+          }
+
+          function handleFilter() {
+            applyFilter();
+          }
+
+          function applyFilter(jumpToIndex) {
+            const filter = document.getElementById('filterSelect').value;
+            if (filter === 'all') {
+              filteredIndexes = applications.map((_, idx) => idx);
+            } else if (filter === 'approved') {
+              filteredIndexes = applications.map((app, idx) => app['shortlisted'] === 'TRUE' ? idx : null).filter(idx => idx !== null);
+            } else if (filter === 'rejected') {
+              filteredIndexes = applications.map((app, idx) => app['shortlisted'] !== 'TRUE' ? idx : null).filter(idx => idx !== null);
+            }
+            // Reset search filter
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (query) {
+              filteredIndexes = filteredIndexes.filter(idx => {
+                const app = applications[idx];
+                return Object.values(app).some(val => String(val).toLowerCase().includes(query));
+              });
+            }
+            // Jump to current candidate if possible
+            if (filteredIndexes.length === 0) {
+              document.getElementById('card').innerHTML = '<div class="text-center text-muted">No candidates found.</div>';
+              updateShortlistCounter();
+              return;
+            }
+            if (jumpToIndex !== undefined) {
+              // If candidate was just approved/rejected, jump to their new index
+              const idx = filteredIndexes.indexOf(jumpToIndex);
+              currentIndex = idx !== -1 ? idx : 0;
+            } else {
+              currentIndex = 0;
+            }
+            showCandidate(currentIndex);
+          }
+
+          function updateFilterStatusText() {
+            const filter = document.getElementById('filterSelect').value;
+            const total = filteredIndexes.length;
+            const statusText = document.getElementById('filterStatusText');
+            
+            if (filter === 'all') {
+              statusText.textContent = `Showing all ${total} candidates`;
+            } else if (filter === 'approved') {
+              statusText.textContent = `Showing all ${total} shortlisted candidates`;
+            } else if (filter === 'rejected') {
+              statusText.textContent = `Showing all ${total} not shortlisted candidates`;
+            }
+          }
+
+        </script>
+    </body>
