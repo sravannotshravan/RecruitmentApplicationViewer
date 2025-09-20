@@ -579,15 +579,15 @@
           <div class="d-flex gap-2 mb-3">
             <div class="card flex-fill" style="background:linear-gradient(135deg, #28a745, #20c997);text-align:center;border:2px solid #28a745;">
               <span style="font-weight:600;color:#fff;">✅ Approved</span><br>
-              <span id="approvedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
+              <span id="mainApprovedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
             </div>
             <div class="card flex-fill" style="background:linear-gradient(135deg, #dc3545, #e74c3c);text-align:center;border:2px solid #dc3545;">
               <span style="font-weight:600;color:#fff;">❌ Rejected</span><br>
-              <span id="rejectedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
+              <span id="mainRejectedCount" style="color:#fff;font-weight:bold;font-size:1.8rem;">0</span>
             </div>
             <div class="card flex-fill" style="background:linear-gradient(135deg, #ffc107, #fd7e14);text-align:center;border:2px solid #ffc107;">
               <span style="font-weight:600;color:#000;">⏳ Pending</span><br>
-              <span id="pendingReviewCount" style="color:#000;font-weight:bold;font-size:1.8rem;">0</span>
+              <span id="mainPendingCount" style="color:#000;font-weight:bold;font-size:1.8rem;">0</span>
             </div>
           </div>
 <!-- Top navigation buttons -->
@@ -774,6 +774,18 @@
             </div>
             
             <div class="instruction-section">
+              <h3>🔧 Version 1.6.041 - Counter & Analytics Fix</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
+              <ul>
+                <li><strong>🗑️ Removed Application Insights:</strong> Eliminated email domains and education analysis sections</li>
+                <li><strong>✅ Fixed Analytics Panel Counters:</strong> Approved/Rejected counters now work properly in analytics dashboard</li>
+                <li><strong>⏳ Fixed Main Panel Pending Counter:</strong> Resolved pending review counter not updating in main interface</li>
+                <li><strong>🔧 Resolved ID Conflicts:</strong> Fixed duplicate element IDs between main panel and analytics modal</li>
+                <li><strong>📊 Streamlined Analytics:</strong> Focused dashboard on essential recruitment metrics and recent activity</li>
+              </ul>
+            </div>
+
+            <div class="instruction-section">
               <h3>🔧 Version 1.6.04 - Status Tracking Fix</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
               <ul>
@@ -937,27 +949,6 @@
                   <div class="status-item" style="background: #1a1a1a; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
                     <div style="color: #ffc107; font-weight: 600;">Pending Review</div>
                     <div id="pendingCount" style="font-size: 1.8rem; font-weight: bold; color: white;">0</div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Application Insights -->
-              <div class="analytics-section" style="margin-bottom: 25px;">
-                <h3 style="color: #bb86fc; margin-bottom: 15px;">🔍 Application Insights</h3>
-                <div style="background: #1a1a1a; padding: 20px; border-radius: 10px;">
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                    <div>
-                      <h4 style="color: #bb86fc; margin-bottom: 10px;">📧 Top Email Domains</h4>
-                      <div id="emailDomains" style="color: #e0e0e0;">
-                        <!-- Dynamic content -->
-                      </div>
-                    </div>
-                    <div>
-                      <h4 style="color: #bb86fc; margin-bottom: 10px;">🎓 Education Levels</h4>
-                      <div id="educationLevels" style="color: #e0e0e0;">
-                        <!-- Dynamic content -->
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -1142,8 +1133,6 @@
               document.getElementById('approvedCount').textContent = '0';
               document.getElementById('rejectedCount').textContent = '0';
               document.getElementById('pendingCount').textContent = '0';
-              document.getElementById('emailDomains').innerHTML = '<p style="color: #888;">No data available</p>';
-              document.getElementById('educationLevels').innerHTML = '<p style="color: #888;">No data available</p>';
               document.getElementById('recentActivity').innerHTML = '<p style="color: #888; text-align: center;">Upload a file to see analytics...</p>';
               return;
             }
@@ -1163,49 +1152,6 @@
             document.getElementById('approvedCount').textContent = approved.toLocaleString();
             document.getElementById('rejectedCount').textContent = rejected.toLocaleString();
             document.getElementById('pendingCount').textContent = pending.toLocaleString();
-            
-            // Email domains analysis
-            const emailDomains = {};
-            applications.forEach(app => {
-              if (app.email) {
-                const domain = app.email.split('@')[1]?.toLowerCase();
-                if (domain) {
-                  emailDomains[domain] = (emailDomains[domain] || 0) + 1;
-                }
-              }
-            });
-            
-            const topDomains = Object.entries(emailDomains)
-              .sort(([,a], [,b]) => b - a)
-              .slice(0, 5)
-              .map(([domain, count]) => `<div style="margin-bottom: 5px;"><span style="color: #bb86fc;">${domain}</span>: ${count}</div>`)
-              .join('');
-            document.getElementById('emailDomains').innerHTML = topDomains || '<p style="color: #888;">No email data</p>';
-            
-            // Education levels analysis
-            const educationLevels = {};
-            applications.forEach(app => {
-              if (app.education) {
-                const edu = app.education.toString().toLowerCase();
-                if (edu.includes('bachelor') || edu.includes('btech') || edu.includes('be ') || edu.includes('b.tech') || edu.includes('b.e')) {
-                  educationLevels['Bachelor\'s'] = (educationLevels['Bachelor\'s'] || 0) + 1;
-                } else if (edu.includes('master') || edu.includes('mtech') || edu.includes('me ') || edu.includes('m.tech') || edu.includes('m.e') || edu.includes('mba')) {
-                  educationLevels['Master\'s'] = (educationLevels['Master\'s'] || 0) + 1;
-                } else if (edu.includes('phd') || edu.includes('doctorate')) {
-                  educationLevels['PhD'] = (educationLevels['PhD'] || 0) + 1;
-                } else if (edu.includes('diploma') || edu.includes('certificate')) {
-                  educationLevels['Diploma'] = (educationLevels['Diploma'] || 0) + 1;
-                } else {
-                  educationLevels['Other'] = (educationLevels['Other'] || 0) + 1;
-                }
-              }
-            });
-            
-            const eduBreakdown = Object.entries(educationLevels)
-              .sort(([,a], [,b]) => b - a)
-              .map(([level, count]) => `<div style="margin-bottom: 5px;"><span style="color: #bb86fc;">${level}</span>: ${count}</div>`)
-              .join('');
-            document.getElementById('educationLevels').innerHTML = eduBreakdown || '<p style="color: #888;">No education data</p>';
             
             // Recent activity (show last 10 status changes)
             const recentActivities = applications
@@ -1914,9 +1860,10 @@
             const rejected = applications.filter(app => app['shortlisted'] === 'FALSE').length;
             const pending = applications.filter(app => app['shortlisted'] === 'PENDING').length;
             
-            document.getElementById('approvedCount').textContent = approved;
-            document.getElementById('rejectedCount').textContent = rejected;
-            document.getElementById('pendingReviewCount').textContent = pending;
+            // Update main panel counters
+            document.getElementById('mainApprovedCount').textContent = approved;
+            document.getElementById('mainRejectedCount').textContent = rejected;
+            document.getElementById('mainPendingCount').textContent = pending;
             
             // Update analytics dashboard if it's visible
             updateAnalyticsDashboard();
