@@ -227,7 +227,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Having issues? Need help?
 
-- 📧 **Email**: [Personal](sravan.kowshik@outlook.com) , [College Email](sravan.kowsik2023@vitstudent.ac.in) *(Replace with your actual email)*
+- 📧 **Email**: [Personal](sravan.kowshik@outlook.com) , [College Email](sravan.kowsik2023@vitstudent.ac.in) 
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/sravannotshravan/recruitmentats/issues)
 - 💡 **Feature Requests**: [GitHub Discussions](https://github.com/sravannotshravan/recruitmentats/discussions)
 
