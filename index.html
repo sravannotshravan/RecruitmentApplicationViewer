@@ -792,6 +792,18 @@
             </div>
             
             <div class="instruction-section">
+              <h3>🔧 Version 1.61 - Pending Counter Synchronization</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
+              <ul>
+                <li><strong>🔄 Fixed Counter Sync:</strong> Main pending counter now matches analytics pending counter logic</li>
+                <li><strong>📊 Consistent Calculation:</strong> Both counters now count empty/undefined and 'PENDING' status candidates</li>
+                <li><strong>✅ Preserved Analytics:</strong> Analytics pending counter functionality kept intact</li>
+                <li><strong>🎯 Better Accuracy:</strong> Pending counts now perfectly synchronized across all interfaces</li>
+                <li><strong>🔧 Technical Fix:</strong> Updated updateShortlistCounter to use same filter logic as analytics</li>
+              </ul>
+            </div>
+
+            <div class="instruction-section">
               <h3>⌨️ Version 1.62 - Navigation & Keyboard Shortcuts</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
               <ul>
@@ -1939,7 +1951,7 @@
           function updateShortlistCounter() {
             const approved = applications.filter(app => app['shortlisted'] === 'TRUE').length;
             const rejected = applications.filter(app => app['shortlisted'] === 'FALSE').length;
-            const pending = applications.filter(app => app['shortlisted'] === 'PENDING').length;
+            const pending = applications.filter(app => !app.shortlisted || app.shortlisted === 'PENDING').length;
             
             // Update main panel counters
             document.getElementById('mainApprovedCount').textContent = approved;
