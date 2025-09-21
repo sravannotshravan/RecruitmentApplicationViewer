@@ -61,6 +61,9 @@
       /* Ensure content doesn't go out of bounds */
       max-width: 100%;
       box-sizing: border-box;
+      /* Force container constraints */
+      width: 100% !important;
+      overflow-x: hidden;
     }
     .form-control:focus {
       background-color: #3a3a3a;
@@ -81,6 +84,12 @@
       line-height: 1.4;
       /* Auto-resize for content */
       overflow-y: auto;
+      /* Force container constraints */
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      /* Prevent horizontal overflow */
+      overflow-x: hidden;
     }
     
     /* Specific handling for long content fields */
@@ -1939,7 +1948,8 @@
 
               const label = document.createElement('label');
               label.className = 'form-label';
-              label.textContent = key;
+              // Replace underscores with spaces for better readability in questions
+              label.textContent = key.replace(/_/g, ' ');
 
               // Special handling for tags field
               if (key.toLowerCase() === 'tags') {
@@ -2213,6 +2223,18 @@
                 textarea.rows = 2;
                 textarea.readOnly = true;
                 textarea.value = candidate[key];
+                
+                // Add robust inline styles for text wrapping
+                textarea.style.cssText += `
+                  word-wrap: break-word !important;
+                  word-break: break-word !important;
+                  white-space: pre-wrap !important;
+                  overflow-wrap: break-word !important;
+                  overflow-x: hidden !important;
+                  width: 100% !important;
+                  max-width: 100% !important;
+                  box-sizing: border-box !important;
+                `;
 
                 // Auto-adjust rows for longer content and add long-text-field class
                 const textLength = (candidate[key] || '').length;
