@@ -1,6 +1,6 @@
 # 🚀 Recruitment ATS - Advanced Candidate Management System
 
-[![Version](https://img.shields.io/badge/version-1.63.8-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
+[![Version](https://img.shields.io/badge/version-1.64-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple.svg)](https://web.dev/progressive-web-apps/)
 
@@ -188,7 +188,15 @@ recruitmentats/
 
 ## 🆕 Version History
 
-### v1.63.8 *(Latest - December 29, 2024)*
+### v1.64 *(Latest - September 21, 2025)*
+- 📧 **Enhanced Contact Management**: Added options to download Approved, All, or Rejected candidate contacts
+- 📱 **Mobile-Compatible vCards**: Improved phone number formatting with international prefixes for better mobile compatibility
+- 🏷️ **Smart Contact Labeling**: Approved contacts marked as "Approved candidate", Rejected as "Rejected candidate", All contacts just "MIC Recruitments 25-26"
+- 🔄 **Flexible Export Options**: Download contact files for any subset of candidates based on review status
+- 📊 **Professional Contact Files**: Industry-standard vCard format compatible with iPhone, Android, Outlook, Gmail
+- 🎯 **Improved UI**: Reorganized download buttons for clearer workflow and better user experience
+
+### v1.63.8 *(December 29, 2024)*
 - 🗑️ **Removed Bulk Operations**: Simplified interface by removing complex bulk selection features for streamlined workflow
 - 🌈 **Updated Brand Colors**: Changed MIC Recruitments gradient to vibrant red→yellow→green→blue sequence
 - 🎯 **Streamlined UI**: Cleaner candidate review interface focused on individual decision-making

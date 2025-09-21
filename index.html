@@ -760,7 +760,12 @@
               <div class="d-flex flex-column flex-md-row gap-2 align-items-center">
                 <button id="saveBtn" class="btn btn-warning" style="min-width:160px;font-weight:600;">💾 Save All Changes</button>
                 <button id="downloadApprovedBtn" class="btn btn-success" style="min-width:160px;font-weight:600;">📊 Export Approved</button>
-                <button id="downloadContactsBtn" class="btn btn-info" style="min-width:160px;font-weight:600;">📧 Download Contacts</button>
+              </div>
+              
+              <div class="d-flex flex-column flex-md-row gap-2 align-items-center mt-2">
+                <button id="downloadContactsBtn" class="btn btn-success" style="min-width:160px;font-weight:600;">📧 Approved Contacts</button>
+                <button id="downloadAllContactsBtn" class="btn btn-info" style="min-width:160px;font-weight:600;">📧 All Contacts</button>
+                <button id="downloadRejectedContactsBtn" class="btn btn-danger" style="min-width:160px;font-weight:600;">📧 Rejected Contacts</button>
               </div>
             </div>
 
@@ -854,7 +859,9 @@
               <ul>
                 <li><strong>Save All Changes:</strong> Click "💾 Save All Changes" to download complete Excel file with all candidates</li>
                 <li><strong>Export Approved Only:</strong> Click "📊 Export Approved" to download Excel file with only shortlisted candidates</li>
-                <li><strong>Download Contact Cards:</strong> Click "📧 Download Contacts" to get VCard (.vcf) file of approved candidates</li>
+                <li><strong>Approved Contacts:</strong> Click "📧 Approved Contacts" to get VCard (.vcf) file of approved candidates</li>
+                <li><strong>All Contacts:</strong> Click "📧 All Contacts" to get VCard (.vcf) file of all candidates</li>
+                <li><strong>Rejected Contacts:</strong> Click "📧 Rejected Contacts" to get VCard (.vcf) file of rejected candidates</li>
                 <li><strong>Contact Integration:</strong> VCard files can be imported into phone contacts, Outlook, Gmail, etc.</li>
                 <li><strong>Preserves Data:</strong> All original data + your shortlist decisions are maintained</li>
                 <li><strong>Smart Field Detection:</strong> Automatically finds Name, Email, Phone, Organization fields</li>
@@ -866,11 +873,12 @@
               <h3>📧 Contact Management</h3>
               <ul>
                 <li><strong>VCard Format:</strong> Industry-standard contact file format (.vcf)</li>
-                <li><strong>Multi-Contact File:</strong> Single file contains all approved candidates' contacts</li>
+                <li><strong>Multi-Contact Files:</strong> Single file contains all selected candidates' contacts</li>
                 <li><strong>Auto-Detection:</strong> Finds common field names like "Name", "Email", "Phone", "Mobile", etc.</li>
+                <li><strong>Mobile Compatibility:</strong> Phone numbers formatted for international use (+91 prefix)</li>
                 <li><strong>Easy Import:</strong> Double-click .vcf file to add contacts to your address book</li>
                 <li><strong>Cross-Platform:</strong> Works with iPhone, Android, Outlook, Gmail, Apple Contacts</li>
-                <li><strong>Professional Notes:</strong> Each contact includes "Approved candidate from MIC Recruitments 25-26"</li>
+                <li><strong>Smart Labeling:</strong> Approved contacts labeled "Approved candidate", Rejected as "Rejected candidate", All contacts just "MIC Recruitments 25-26"</li>
               </ul>
             </div>
             
@@ -921,6 +929,19 @@
               <button class="close" id="closePatchModal">&times;</button>
             </div>
             
+            <div class="instruction-section">
+              <h3>📧 Version 1.64 - Enhanced Contact Management</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 21, 2025</p>
+              <ul>
+                <li><strong>📧 Multiple Contact Downloads:</strong> Added options to download Approved, All, or Rejected candidate contacts</li>
+                <li><strong>📱 Enhanced Mobile Compatibility:</strong> Improved vCard format with proper phone number formatting (+91 prefix)</li>
+                <li><strong>🏷️ Smart Contact Labeling:</strong> Approved contacts marked as "Approved candidate", Rejected as "Rejected candidate"</li>
+                <li><strong>🔄 Flexible Export Options:</strong> Download contacts for any subset of candidates based on review status</li>
+                <li><strong>📊 Professional Contact Files:</strong> Industry-standard vCard format compatible with all major contact apps</li>
+                <li><strong>🎯 Improved User Experience:</strong> Reorganized download buttons for better workflow and clarity</li>
+              </ul>
+            </div>
+
             <div class="instruction-section">
               <h3>🎨 Version 1.63.8 - Interface Simplification</h3>
               <p style="color: #aaa; font-size: 0.9rem;">December 29, 2024</p>
@@ -1750,47 +1771,86 @@
             showToast(`📊 Exported ${approvedCandidates.length} approved candidates successfully!`, 'success');
           });
 
-          // Download VCard contacts
+          // Download VCard contacts - Approved only
           document.getElementById('downloadContactsBtn').addEventListener('click', function() {
             const approvedCandidates = applications.filter(app => app['shortlisted'] === 'TRUE');
             if (approvedCandidates.length === 0) {
               showToast('⚠️ No approved candidates to export contacts. Please approve some candidates first.', 'error');
               return;
             }
-            downloadVCardContacts(approvedCandidates);
+            downloadVCardContacts(approvedCandidates, 'approved');
             showToast(`📧 Downloaded contact cards for ${approvedCandidates.length} approved candidates!`, 'success');
           });
 
+          // Download VCard contacts - All candidates
+          document.getElementById('downloadAllContactsBtn').addEventListener('click', function() {
+            if (applications.length === 0) {
+              showToast('⚠️ No candidates available to export contacts.', 'error');
+              return;
+            }
+            downloadVCardContacts(applications, 'all');
+            showToast(`📧 Downloaded contact cards for ${applications.length} candidates!`, 'success');
+          });
+
+          // Download VCard contacts - Rejected only
+          document.getElementById('downloadRejectedContactsBtn').addEventListener('click', function() {
+            const rejectedCandidates = applications.filter(app => app['shortlisted'] === 'FALSE');
+            if (rejectedCandidates.length === 0) {
+              showToast('⚠️ No rejected candidates to export contacts.', 'error');
+              return;
+            }
+            downloadVCardContacts(rejectedCandidates, 'rejected');
+            showToast(`📧 Downloaded contact cards for ${rejectedCandidates.length} rejected candidates!`, 'success');
+          });
+
           // VCard generation function
-          function downloadVCardContacts(candidates) {
+          function downloadVCardContacts(candidates, type = 'approved') {
             let vCardContent = '';
             
             candidates.forEach((candidate, index) => {
               // Try to find common field names for contact info
               const name = candidate.Name || candidate.name || candidate['Full Name'] || candidate['Candidate Name'] || `Candidate ${index + 1}`;
               const email = candidate.Email || candidate.email || candidate['Email Address'] || candidate['Email ID'] || '';
-              const phone = candidate.Phone || candidate.phone || candidate['Mobile'] || candidate['Contact'] || candidate['Phone Number'] || '';
+              let phone = candidate.Phone || candidate.phone || candidate['Mobile'] || candidate['Contact'] || candidate['Phone Number'] || '';
               const organization = candidate.Organization || candidate.organization || candidate.Company || candidate.company || '';
+              
+              // Clean and format phone number for better compatibility
+              if (phone) {
+                // Remove any non-digit characters except + at the beginning
+                phone = phone.replace(/[^\d+]/g, '');
+                // Ensure it starts with + for international format if it doesn't
+                if (!phone.startsWith('+') && phone.length >= 10) {
+                  phone = '+91' + phone; // Default to India country code
+                }
+              }
               
               // Generate VCard for each candidate
               vCardContent += `BEGIN:VCARD\n`;
               vCardContent += `VERSION:3.0\n`;
               vCardContent += `FN:${name}\n`;
-              vCardContent += `N:${name};;;;\n`;
+              vCardContent += `N:${name.split(' ').pop()};${name.split(' ').slice(0, -1).join(' ')};;;\n`;
               
               if (email) {
-                vCardContent += `EMAIL:${email}\n`;
+                vCardContent += `EMAIL;TYPE=INTERNET:${email}\n`;
               }
               
               if (phone) {
-                vCardContent += `TEL:${phone}\n`;
+                vCardContent += `TEL;TYPE=CELL:${phone}\n`;
               }
               
               if (organization) {
                 vCardContent += `ORG:${organization}\n`;
               }
               
-              vCardContent += `NOTE:Approved candidate from MIC Recruitments 25-26\n`;
+              // Add appropriate note based on type
+              if (type === 'approved') {
+                vCardContent += `NOTE:Approved candidate from MIC Recruitments 25-26\n`;
+              } else if (type === 'rejected') {
+                vCardContent += `NOTE:Rejected candidate from MIC Recruitments 25-26\n`;
+              } else {
+                vCardContent += `NOTE:MIC Recruitments 25-26\n`;
+              }
+              
               vCardContent += `END:VCARD\n\n`;
             });
             
@@ -1799,7 +1859,16 @@
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'approved_candidates_contacts.vcf';
+            
+            // Set filename based on type
+            if (type === 'approved') {
+              a.download = 'approved_candidates_contacts.vcf';
+            } else if (type === 'rejected') {
+              a.download = 'rejected_candidates_contacts.vcf';
+            } else {
+              a.download = 'all_candidates_contacts.vcf';
+            }
+            
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
