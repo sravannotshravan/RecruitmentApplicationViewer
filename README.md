@@ -1,6 +1,6 @@
 # 🚀 Recruitment ATS - Advanced Candidate Management System
 
-[![Version](https://img.shields.io/badge/version-1.63.1-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
+[![Version](https://img.shields.io/badge/version-1.63.5-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple.svg)](https://web.dev/progressive-web-apps/)
 
@@ -13,12 +13,14 @@ A powerful, modern recruitment application tracking system (ATS) built as a Prog
 - **⚡ Real-time Processing** - Instant data parsing and candidate display
 - **💾 Persistent Storage** - All data saved locally in your browser
 - **🔍 Smart Field Detection** - Automatically recognizes Name, Email, Phone, Registration Number
+- **📝 Smart Text Wrapping** - Proper word wrapping for long questions and content
 
 ### 🎯 **Candidate Management**
 - **Three-Status System** - Approve ✅, Reject ❌, or Pending ⏳
 - **Individual Tag Removal** - Click X to remove specific tags
-- **Live Tag Preview** - See tags as you type with color coding
+- **Live Tag Preview** - See tags as you type with color coding (Enter to preview)
 - **Bulk Operations** - Select and process multiple candidates at once
+- **Auto-sizing Fields** - Text areas automatically adjust to content length
 
 ### 📊 **Analytics Dashboard**
 - **Real-time Metrics** - Total applications, approval rates, review progress
@@ -96,17 +98,19 @@ Visit the live application: **[recruitment-ats.vercel.app](https://recruitment-a
 
 ### Features
 - **🎨 20 Color Options** - Choose from a diverse color palette
-- **📚 Popular Tags** - Quick access to frequently used tags
+- **📚 Popular Tags** - Quick access to frequently used tags (clutter-free)
 - **✨ Individual Removal** - Remove specific tags without editing the whole list
-- **👀 Live Preview** - See exactly how tags will look before saving
-- **⌨️ Smart Formatting** - Auto-format with proper spacing
+- **👀 Live Preview** - Press Enter to see exactly how tags will look
+- **⌨️ Smart Formatting** - Auto-format with proper spacing (Tab key)
+- **🚫 No Auto-Pollution** - Tags only added to library when intentionally saved
 
 ### Usage
 1. Click on any "🏷️ Tags" field
 2. Type tags separated by commas
-3. Choose colors for new tags using the color picker
-4. Press Tab to auto-format or Enter to save
-5. Click X on any tag to remove it individually
+3. **Press Enter** to preview tags with colors
+4. Choose colors for new tags using the color picker
+5. Press **Ctrl+Enter** to save or **Escape** to cancel
+6. Click **X** on any tag to remove it individually
 
 ## 📊 Analytics Dashboard
 
@@ -132,6 +136,13 @@ All metrics update instantly as you make decisions, ensuring you always have cur
 - Works completely offline after first load
 - All data processing happens on your device
 - No internet required for core functionality
+
+### Mobile-First Design
+- **Icon-Only Navigation** - Compact button design for mobile screens
+- **Hanging Button Effects** - Rounded bottom corners with drop shadows
+- **Responsive Text Wrapping** - Long content wraps properly on all screen sizes
+- **Auto-sizing Fields** - Text areas adjust to content length automatically
+- **Touch-Optimized Interface** - Designed for both mouse and touch interactions
 
 ## 🛠️ Technical Specifications
 
@@ -183,16 +194,35 @@ recruitmentats/
 
 ## 🆕 Version History
 
-### v1.63.1 *(Latest - September 20, 2025)*
+### v1.63.5 *(Latest - September 21, 2025)*
+- 📝 **Text Wrapping Enhancement**: Proper word wrapping for long questions and text content
+- 📐 **Overflow Prevention**: Text no longer goes out of bounds in form fields
+- 📏 **Auto-sizing**: Textareas automatically adjust height based on content length
+- 📱 **Mobile Optimization**: Improved text wrapping and sizing for mobile devices
+
+### v1.63.4 *(September 20, 2025)*
+- 📱 **Mobile UI Enhancement**: Top-right buttons show as icons only on mobile
+- 🎨 **Hanging Effect**: Buttons have rounded bottom corners with drop shadows
+- 🔄 **Horizontal Layout**: Buttons arranged horizontally instead of vertically
+
+### v1.63.3 *(September 20, 2025)*
+- 🔧 **Tag Library Fix**: Stopped adding partial tags while typing to tag library
+- 🎯 **Clean Popular Tags**: No more cluttered tag suggestions
+
+### v1.63.2 *(September 20, 2025)*
+- ⌨️ **Enter Key Preview**: Press Enter to show tag preview (no auto-updates)
+- 💾 **Ctrl+Enter to Save**: Better keyboard control for tag editing
+
+### v1.63.1 *(September 20, 2025)*
 - 🔧 **Recent Activity Fix**: Proper candidate name and registration number display
 - 📝 **Enhanced Field Detection**: Uses exact field names from source documents
 
-### v1.63 
+### v1.63 *(December 2024)*
 - 🏷️ **Enhanced Tag Management**: Individual tag removal with X buttons
 - 👀 **Live Tag Preview**: Real-time visual feedback while typing
 - ⌨️ **Smart Tag Formatting**: Tab key for auto-formatting
 
-### v1.62 
+### v1.62 *(November 2024)*
 - ⌨️ **Keyboard Shortcuts**: Quick actions with 1, 2, 3 keys
 - 🧭 **Enhanced Navigation**: Arrow key navigation between candidates
 
