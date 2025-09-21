@@ -38,7 +38,7 @@ A powerful, modern recruitment application tracking system (ATS) built as a Prog
 ## 🚀 Quick Start
 
 ### Option 1: Use Online (Recommended)
-Visit the live application: [https://sravannotshravan.github.io/recruitmentats/](https://sravannotshravan.github.io/recruitmentats/)
+Visit the live application: [https://sravannotshravan.github.io/RecruitmentApplicationViewer/](https://sravannotshravan.github.io/RecruitmentApplicationViewer/)
 ### Option 2: Run Locally
 1. **Clone the repository**
    ```bash
