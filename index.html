@@ -757,15 +757,19 @@
           <div class="card mt-3 section-gap" id="card"></div>
 
             <div class="d-flex justify-content-center save-row">
-              <div class="d-flex flex-column flex-md-row gap-2 align-items-center">
-                <button id="saveBtn" class="btn btn-warning" style="min-width:160px;font-weight:600;">💾 Save All Changes</button>
-                <button id="downloadApprovedBtn" class="btn btn-success" style="min-width:160px;font-weight:600;">📊 Export Approved</button>
-              </div>
-              
-              <div class="d-flex flex-column flex-md-row gap-2 align-items-center mt-2">
-                <button id="downloadContactsBtn" class="btn btn-success" style="min-width:160px;font-weight:600;">📧 Approved Contacts</button>
-                <button id="downloadAllContactsBtn" class="btn btn-info" style="min-width:160px;font-weight:600;">📧 All Contacts</button>
-                <button id="downloadRejectedContactsBtn" class="btn btn-danger" style="min-width:160px;font-weight:600;">📧 Rejected Contacts</button>
+              <div class="d-flex flex-column gap-3 align-items-center" style="width: 100%; max-width: 600px;">
+                <!-- First row: Save and Export -->
+                <div class="d-flex flex-column flex-md-row gap-2 align-items-center justify-content-center w-100">
+                  <button id="saveBtn" class="btn btn-warning" style="min-width:160px;font-weight:600;">💾 Save All Changes</button>
+                  <button id="downloadApprovedBtn" class="btn btn-success" style="min-width:160px;font-weight:600;">📊 Export Approved</button>
+                </div>
+                
+                <!-- Second row: Contact Downloads -->
+                <div class="d-flex flex-column flex-md-row gap-2 align-items-center justify-content-center w-100">
+                  <button id="downloadContactsBtn" class="btn btn-success" style="min-width:160px;font-weight:600;">📧 Approved Contacts</button>
+                  <button id="downloadAllContactsBtn" class="btn btn-info" style="min-width:160px;font-weight:600;">📧 All Contacts</button>
+                  <button id="downloadRejectedContactsBtn" class="btn btn-danger" style="min-width:160px;font-weight:600;">📧 Rejected Contacts</button>
+                </div>
               </div>
             </div>
 
