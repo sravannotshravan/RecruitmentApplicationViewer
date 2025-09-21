@@ -1,6 +1,6 @@
 # 🚀 Recruitment ATS - Advanced Candidate Management System
 
-[![Version](https://img.shields.io/badge/version-1.63.51-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
+[![Version](https://img.shields.io/badge/version-1.63.7-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple.svg)](https://web.dev/progressive-web-apps/)
 
@@ -14,6 +14,7 @@ A powerful, modern recruitment application tracking system (ATS) built as a Prog
 - **💾 Persistent Storage** - All data saved locally in your browser
 - **🔍 Smart Field Detection** - Automatically recognizes Name, Email, Phone, Registration Number
 - **📝 Smart Text Wrapping** - Proper word wrapping for long questions and content
+- **🔄 Progress Tracking** - Auto-save and resume from where you left off
 
 ### 🎯 **Candidate Management**
 - **Three-Status System** - Approve ✅, Reject ❌, or Pending ⏳
@@ -193,7 +194,15 @@ recruitmentats/
 
 ## 🆕 Version History
 
-### v1.63.51 *(Latest - September 21, 2025)*
+### v1.63.7 *(Latest - September 21, 2025)*
+- 💾 **Progress Tracking**: Excel files now include metadata sheet with your current review position
+- 🔄 **Auto-Resume**: Automatically resume from where you left off when reopening saved files
+- 📊 **Smart Metadata**: Tracks candidate position, review progress percentage, and timestamp
+- 🎯 **Position Memory**: Remembers exact candidate you were reviewing, not just the beginning
+- 📈 **Progress Statistics**: Saves approved/rejected/pending counts with each file
+- ⏰ **Timestamp Tracking**: Shows when you last saved your progress
+
+### v1.63.51 *(September 21, 2025)*
 - 🐛 **Critical Bug Fix**: Fixed navigation issue where candidates marked for "Pending Review" were auto-rejected
 - ⏳ **Persistent Review Status**: Press '3' to mark for review - status now persists correctly during navigation
 - 🎯 **Smart Auto-Rejection**: Only truly unreviewed candidates get auto-rejected when skipped

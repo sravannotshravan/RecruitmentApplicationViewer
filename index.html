@@ -965,7 +965,28 @@
             </div>
             
             <div class="instruction-section">
-              <h3>🔧 Version 1.63.51 - Critical Pending Review Bug Fix</h3>
+              <h3>� Version 1.63.7 - Progress Tracking & Auto-Resume</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 21, 2025</p>
+              <ul>
+                <li><strong>💾 Progress Saving:</strong> Excel files now include metadata sheet with your current review position</li>
+                <li><strong>🔄 Auto-Resume:</strong> Automatically resume from where you left off when reopening saved files</li>
+                <li><strong>📊 Smart Metadata:</strong> Tracks candidate position, review progress percentage, and timestamp</li>
+                <li><strong>🎯 Position Memory:</strong> Remembers exact candidate you were reviewing, not just the beginning</li>
+                <li><strong>📈 Progress Statistics:</strong> Saves approved/rejected/pending counts with each file</li>
+                <li><strong>⏰ Timestamp Tracking:</strong> Shows when you last saved your progress</li>
+                <li><strong>🔍 Candidate Identification:</strong> Uses Registration Number, Name, or position to identify resume point</li>
+              </ul>
+              <p><strong>How It Works:</strong></p>
+              <ul>
+                <li>Save your work with "💾 Save All Changes" - includes hidden ReviewProgress sheet</li>
+                <li>When reopening the file, automatically jumps to your last reviewed candidate</li>
+                <li>Shows progress percentage and last saved timestamp in notifications</li>
+                <li>Gracefully handles cases where progress data isn't available</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>�🔧 Version 1.63.51 - Critical Pending Review Bug Fix</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 21, 2025</p>
               <ul>
                 <li><strong>🐛 Fixed Pending Review Navigation Bug:</strong> Candidates marked as "Pending Review" no longer auto-reject when navigating to next candidate</li>
@@ -1807,11 +1828,33 @@
               showToast('⚠️ No data to save. Please load a file first.', 'error');
               return;
             }
+            
+            // Create workbook with main data
             const ws = XLSX.utils.json_to_sheet(applications);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+            
+            // Add progress metadata sheet
+            const progressData = [{
+              lastReviewedIndex: currentIndex || 0,
+              lastReviewedCandidate: filteredIndexes.length > 0 && currentIndex !== null ? 
+                (applications[filteredIndexes[currentIndex]]?.['Registration No'] || 
+                 applications[filteredIndexes[currentIndex]]?.['name'] || 
+                 applications[filteredIndexes[currentIndex]]?.['Name'] || 
+                 `Candidate ${currentIndex + 1}`) : 'None',
+              totalCandidates: applications.length,
+              approvedCount: applications.filter(app => app['shortlisted'] === 'TRUE').length,
+              rejectedCount: applications.filter(app => app['shortlisted'] === 'FALSE').length,
+              pendingCount: applications.filter(app => !app.shortlisted || app.shortlisted === 'PENDING').length,
+              lastSavedTimestamp: new Date().toISOString(),
+              reviewProgress: Math.round(((applications.filter(app => app['shortlisted'] === 'TRUE' || app['shortlisted'] === 'FALSE').length) / applications.length) * 100)
+            }];
+            
+            const progressWs = XLSX.utils.json_to_sheet(progressData);
+            XLSX.utils.book_append_sheet(wb, progressWs, 'ReviewProgress');
+            
             XLSX.writeFile(wb, 'updated_candidates.xlsx');
-            showToast('💾 File saved successfully as "updated_candidates.xlsx"', 'success');
+            showToast('💾 File saved with progress tracking! Resume from where you left off.', 'success');
           });
 
           // Download approved candidates only
@@ -1896,6 +1939,22 @@
               const sheet = workbook.Sheets[sheetName];
               const json = XLSX.utils.sheet_to_json(sheet);
 
+              // Check for progress metadata sheet
+              let progressData = null;
+              let shouldRestoreProgress = false;
+              if (workbook.SheetNames.includes('ReviewProgress')) {
+                try {
+                  const progressSheet = workbook.Sheets['ReviewProgress'];
+                  const progressJson = XLSX.utils.sheet_to_json(progressSheet);
+                  if (progressJson.length > 0) {
+                    progressData = progressJson[0];
+                    shouldRestoreProgress = true;
+                  }
+                } catch (error) {
+                  console.log('Could not read progress data:', error);
+                }
+              }
+
               // Ensure 'shortlisted' and 'tags' fields exist with defaults
               applications = json.map(app => {
                 if (!('shortlisted' in app) || app['shortlisted'] === '') app['shortlisted'] = 'PENDING';
@@ -1914,9 +1973,31 @@
                 
                 applyFilter();
                 
-                // Show success toast with pending count
-                const pendingCount = applications.filter(app => app.shortlisted === 'PENDING').length;
-                showToast(`📁 File loaded successfully! Found ${applications.length} candidates (${pendingCount} pending review)`, 'success');
+                // Handle progress restoration
+                if (shouldRestoreProgress && progressData) {
+                  const savedIndex = progressData.lastReviewedIndex || 0;
+                  const savedCandidate = progressData.lastReviewedCandidate || 'Unknown';
+                  const savedTimestamp = progressData.lastSavedTimestamp ? new Date(progressData.lastSavedTimestamp).toLocaleString() : 'Unknown';
+                  const reviewProgress = progressData.reviewProgress || 0;
+                  
+                  // Restore position if valid
+                  if (savedIndex >= 0 && savedIndex < filteredIndexes.length) {
+                    currentIndex = savedIndex;
+                    showCandidate(currentIndex);
+                    showToast(`🔄 Progress restored! Resuming from: ${savedCandidate} (${reviewProgress}% complete)`, 'info');
+                    
+                    // Show detailed progress info
+                    setTimeout(() => {
+                      showToast(`📊 Last saved: ${savedTimestamp} | Position: ${savedIndex + 1}/${applications.length}`, 'info');
+                    }, 2000);
+                  } else {
+                    showToast(`📁 File loaded with saved progress, but starting from beginning`, 'info');
+                  }
+                } else {
+                  // Show success toast with pending count (no progress data)
+                  const pendingCount = applications.filter(app => app.shortlisted === 'PENDING').length;
+                  showToast(`📁 File loaded successfully! Found ${applications.length} candidates (${pendingCount} pending review)`, 'success');
+                }
                 
                 // Show bulk operations panel
                 showBulkOperations();
