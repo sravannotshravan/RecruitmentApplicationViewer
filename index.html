@@ -21,7 +21,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="MIC Recruitment">
-  <meta name="description" content="Advanced recruitment application viewer with analytics, bulk operations, and smart tagging system">
+  <meta name="description" content="Advanced recruitment application viewer with analytics and smart tagging system">
   <meta name="keywords" content="recruitment, application, viewer, analytics, HR, candidate management">
   
   <title>MIC Recruitment Applications Viewer</title>
@@ -178,7 +178,7 @@
       object-fit: contain;
     }
     .mic-gradient {
-      background: linear-gradient(45deg, #f25022 0%, #7fba00 25%, #00a4ef 50%, #ffb900 75%);
+      background: linear-gradient(45deg, #ff0000 0%, #ffff00 25%, #00ff00 50%, #0000ff 75%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -754,34 +754,6 @@
             <button id="nextBtnTop" class="btn btn-primary" disabled>Next ➡</button>
           </div>
           
-          <!-- Bulk Operations -->
-          <div id="bulkOperations" class="card mb-3" style="display: none; background: #1a1a1a; border: 1px solid #333;">
-            <div class="card-body">
-              <h5 style="color: #bb86fc; margin-bottom: 15px;">🔄 Bulk Operations</h5>
-              <div class="row align-items-center">
-                <div class="col-md-6">
-                  <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <input type="checkbox" id="selectAll" class="form-check-input" style="margin-right: 5px;">
-                    <label for="selectAll" class="form-check-label" style="color: #e0e0e0;">Select All Visible</label>
-                    <span id="selectedCount" style="color: #bb86fc; font-weight: bold; margin-left: 10px;">0 selected</span>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="d-flex gap-2 justify-content-md-end">
-                    <button id="bulkApproveBtn" class="btn btn-success btn-sm" disabled>
-                      ✅ Approve Selected (<span id="bulkApproveCount">0</span>)
-                    </button>
-                    <button id="bulkRejectBtn" class="btn btn-danger btn-sm" disabled>
-                      ❌ Reject Selected (<span id="bulkRejectCount">0</span>)
-                    </button>
-                    <button id="bulkClearBtn" class="btn btn-outline-light btn-sm" disabled>
-                      🔄 Clear Selection
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="card mt-3 section-gap" id="card"></div>
 
             <div class="d-flex justify-content-center save-row">
@@ -849,28 +821,13 @@
               <h3>✅ Reviewing Candidates</h3>
               <ul>
                 <li><strong>Individual Actions:</strong> Click "Approve" or "Reject" for single candidates</li>
-                <li><strong>Bulk Selection:</strong> Use checkboxes to select multiple candidates</li>
-                <li><strong>Select All:</strong> Check "Select All Visible" to select all current candidates</li>
-                <li><strong>Bulk Approve:</strong> Click "✅ Approve Selected" to approve multiple candidates at once</li>
-                <li><strong>Bulk Reject:</strong> Click "❌ Reject Selected" to reject multiple candidates at once</li>
                 <li><strong>Status Tracking:</strong> See live counts of approved/rejected/pending review</li>
                 <li><strong>Filter View:</strong> Use dropdown to show "All", "Approved", "Rejected", or "Pending Review" only</li>
               </ul>
             </div>
             
             <div class="instruction-section">
-              <h3>🔄 Bulk Operations</h3>
-              <ul>
-                <li><strong>Efficiency:</strong> Review and approve/reject multiple candidates simultaneously</li>
-                <li><strong>Smart Selection:</strong> See real-time count of selected candidates</li>
-                <li><strong>Confirmation:</strong> System asks for confirmation before bulk actions</li>
-                <li><strong>Clear Selection:</strong> Use "🔄 Clear Selection" to unselect all</li>
-                <li><strong>Mobile Friendly:</strong> Bulk operations work on all devices</li>
-              </ul>
-            </div>
-            
-            <div class="instruction-section">
-              <h3>📊 Analytics Dashboard</h3>
+              <h3> Analytics Dashboard</h3>
               <ul>
                 <li><strong>Access Analytics:</strong> Click "📊 Analytics" button to view recruitment insights</li>
                 <li><strong>Summary Stats:</strong> View total applications, approval rate, and review progress</li>
@@ -964,6 +921,17 @@
               <button class="close" id="closePatchModal">&times;</button>
             </div>
             
+            <div class="instruction-section">
+              <h3>🎨 Version 1.63.8 - Interface Simplification</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">December 29, 2024</p>
+              <ul>
+                <li><strong>🗑️ Removed Bulk Operations:</strong> Simplified interface by removing complex bulk selection features</li>
+                <li><strong>🌈 Updated Brand Colors:</strong> Changed MIC Recruitments gradient to red, yellow, green, blue sequence</li>
+                <li><strong>🎯 Streamlined UI:</strong> Cleaner candidate review interface focused on individual decisions</li>
+                <li><strong>📝 Documentation Cleanup:</strong> Removed outdated bulk operations references from help system</li>
+              </ul>
+            </div>
+
             <div class="instruction-section">
               <h3>📋 Version 1.63.71 - Candidate Position Display</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 21, 2025</p>
@@ -1181,8 +1149,7 @@
               <ul>
                 <li><strong>📖 Updated Help System:</strong> Comprehensive documentation for all v1.6 features</li>
                 <li><strong>🏷️ Tags Tutorial:</strong> Step-by-step guide for using the custom tags system</li>
-                <li><strong>🔄 Bulk Operations Guide:</strong> Detailed instructions for mass candidate management</li>
-                <li><strong>📊 Analytics Walkthrough:</strong> Complete overview of dashboard features and insights</li>
+                <li><strong> Analytics Walkthrough:</strong> Complete overview of dashboard features and insights</li>
                 <li><strong>🔍 Advanced Search Tips:</strong> Enhanced search documentation with tag syntax examples</li>
                 <li><strong>📱 Mobile Instructions:</strong> Optimized help content for mobile users</li>
               </ul>
@@ -1192,14 +1159,14 @@
               <h3>�🌟 Version 1.6 - Advanced Analytics & Operations</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 20, 2025</p>
               <ul>
-                <li><strong>📊 Analytics Dashboard:</strong> Comprehensive recruitment statistics with approval rates, status breakdown, and insights</li>
-                <li><strong>🔄 Bulk Operations:</strong> Mass approve/reject functionality with checkboxes and select all options</li>
+                <li><strong>� Bulk Operations:</strong> Mass approve/reject functionality with checkboxes and select all options</li>
+                <li><strong>� Analytics Dashboard:</strong> Comprehensive recruitment statistics with approval rates, status breakdown, and insights</li>
                 <li><strong>🏷️ Custom Tags System:</strong> Add/edit candidate tags with visual display and color coding</li>
                 <li><strong>🔍 Tag-Based Search:</strong> Search candidates by tags using "tags:tagname" syntax</li>
                 <li><strong>📈 Email Domain Analysis:</strong> Track application sources by email domains</li>
                 <li><strong>🎓 Education Level Insights:</strong> Automated categorization of education backgrounds</li>
                 <li><strong>⚡ Recent Activity Tracking:</strong> Real-time view of recent approval/rejection actions</li>
-                <li><strong>🎯 Enhanced UX:</strong> Improved candidate navigation with bulk selection interface</li>
+                <li><strong>🎯 Enhanced UX:</strong> Improved candidate navigation with streamlined interface</li>
               </ul>
             </div>
             
@@ -1566,106 +1533,6 @@
               recentActivities || '<p style="color: #888; text-align: center;">No review activity yet...</p>';
           }
 
-          // Bulk Operations System
-          let selectedCandidates = new Set();
-
-          function updateBulkOperationButtons() {
-            const checkboxes = document.querySelectorAll('.candidate-checkbox:checked');
-            const selectedCount = checkboxes.length;
-            selectedCandidates.clear();
-            
-            checkboxes.forEach(checkbox => {
-              const appIndex = parseInt(checkbox.id.split('_')[1]);
-              selectedCandidates.add(appIndex);
-            });
-            
-            document.getElementById('selectedCount').textContent = `${selectedCount} selected`;
-            document.getElementById('bulkApproveCount').textContent = selectedCount;
-            document.getElementById('bulkRejectCount').textContent = selectedCount;
-            
-            const bulkApproveBtn = document.getElementById('bulkApproveBtn');
-            const bulkRejectBtn = document.getElementById('bulkRejectBtn');
-            const bulkClearBtn = document.getElementById('bulkClearBtn');
-            
-            bulkApproveBtn.disabled = selectedCount === 0;
-            bulkRejectBtn.disabled = selectedCount === 0;
-            bulkClearBtn.disabled = selectedCount === 0;
-            
-            // Update select all checkbox
-            const totalVisible = document.querySelectorAll('.candidate-checkbox').length;
-            const selectAllCheckbox = document.getElementById('selectAll');
-            if (totalVisible > 0) {
-              selectAllCheckbox.indeterminate = selectedCount > 0 && selectedCount < totalVisible;
-              selectAllCheckbox.checked = selectedCount === totalVisible && totalVisible > 0;
-            }
-          }
-
-          function showBulkOperations() {
-            if (applications.length > 0) {
-              document.getElementById('bulkOperations').style.display = 'block';
-            }
-          }
-
-          function hideBulkOperations() {
-            document.getElementById('bulkOperations').style.display = 'none';
-            selectedCandidates.clear();
-            updateBulkOperationButtons();
-          }
-
-          // Event listeners for bulk operations
-          document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.candidate-checkbox');
-            checkboxes.forEach(checkbox => {
-              checkbox.checked = this.checked;
-            });
-            updateBulkOperationButtons();
-          });
-
-          document.getElementById('bulkApproveBtn').addEventListener('click', function() {
-            if (selectedCandidates.size === 0) return;
-            
-            const confirmed = confirm(`Are you sure you want to approve ${selectedCandidates.size} candidate(s)?`);
-            if (!confirmed) return;
-            
-            selectedCandidates.forEach(appIndex => {
-              if (applications[appIndex]) {
-                applications[appIndex].shortlisted = 'TRUE';
-              }
-            });
-            
-            updateShortlistCounter();
-            showCandidate(currentIndex); // Refresh current view
-            showToast(`✅ Successfully approved ${selectedCandidates.size} candidate(s)`, 'success');
-            updateBulkOperationButtons();
-          });
-
-          document.getElementById('bulkRejectBtn').addEventListener('click', function() {
-            if (selectedCandidates.size === 0) return;
-            
-            const confirmed = confirm(`Are you sure you want to reject ${selectedCandidates.size} candidate(s)?`);
-            if (!confirmed) return;
-            
-            selectedCandidates.forEach(appIndex => {
-              if (applications[appIndex]) {
-                applications[appIndex].shortlisted = 'FALSE';
-              }
-            });
-            
-            updateShortlistCounter();
-            showCandidate(currentIndex); // Refresh current view
-            showToast(`❌ Successfully rejected ${selectedCandidates.size} candidate(s)`, 'error');
-            updateBulkOperationButtons();
-          });
-
-          document.getElementById('bulkClearBtn').addEventListener('click', function() {
-            const checkboxes = document.querySelectorAll('.candidate-checkbox');
-            checkboxes.forEach(checkbox => {
-              checkbox.checked = false;
-            });
-            document.getElementById('selectAll').checked = false;
-            updateBulkOperationButtons();
-          });
-
           // Tags System Functions
           function updateTagsDisplay(appIndex, tagsString) {
             const tagsDisplay = document.getElementById(`tagsDisplay_${appIndex}`);
@@ -1792,7 +1659,6 @@
             filteredIndexes = [];
             document.getElementById('card').innerHTML = '';
             updateShortlistCounter();
-            hideBulkOperations();
           });
 
           // Drag and drop
@@ -2012,9 +1878,6 @@
                   showToast(`📁 File loaded successfully! Found ${applications.length} candidates (${pendingCount} pending review)`, 'success');
                 }
                 
-                // Show bulk operations panel
-                showBulkOperations();
-                
               // update file name display
               const fileInput = document.getElementById('fileInput');
               const fileNameEl = document.getElementById('fileName');
@@ -2063,33 +1926,6 @@
           serialNumberDiv.innerHTML = `📋 Candidate ${currentIndex + 1} of ${filteredIndexes.length} ${filteredIndexes.length !== applications.length ? `(${applications.length} total)` : ''}`;
           card.appendChild(serialNumberDiv);
           
-          // Add bulk selection checkbox at the top
-          const checkboxWrapper = document.createElement('div');
-          checkboxWrapper.className = 'mb-3 d-flex align-items-center gap-2';
-          checkboxWrapper.style.background = '#2a2a2a';
-          checkboxWrapper.style.padding = '10px';
-          checkboxWrapper.style.borderRadius = '8px';
-          checkboxWrapper.style.border = '1px solid #444';
-          
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.id = `candidateCheckbox_${appIndex}`;
-          checkbox.className = 'form-check-input candidate-checkbox';
-          checkbox.style.marginRight = '8px';
-          
-          const checkboxLabel = document.createElement('label');
-          checkboxLabel.htmlFor = `candidateCheckbox_${appIndex}`;
-          checkboxLabel.className = 'form-check-label';
-          checkboxLabel.style.color = '#bb86fc';
-          checkboxLabel.style.fontWeight = '600';
-          checkboxLabel.textContent = '🎯 Select for bulk operations';
-          
-          checkboxWrapper.appendChild(checkbox);
-          checkboxWrapper.appendChild(checkboxLabel);
-          card.appendChild(checkboxWrapper);
-          
-          // Add event listener for checkbox
-          checkbox.addEventListener('change', updateBulkOperationButtons);
             for (const key in candidate) {
               const wrapper = document.createElement('div');
               wrapper.className = 'mb-3';

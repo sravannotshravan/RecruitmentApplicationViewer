@@ -1,10 +1,10 @@
 # 🚀 Recruitment ATS - Advanced Candidate Management System
 
-[![Version](https://img.shields.io/badge/version-1.63.71-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
+[![Version](https://img.shields.io/badge/version-1.63.8-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple.svg)](https://web.dev/progressive-web-apps/)
 
-A powerful, modern recruitment application tracking system (ATS) built as a Progressive Web App. Streamline your hiring process with advanced analytics, bulk operations, smart tagging, and real-time candidate management.
+A powerful, modern recruitment application tracking system (ATS) built as a Progressive Web App. Streamline your hiring process with advanced analytics, smart tagging, and real-time candidate management.
 
 ## ✨ Key Features
 
@@ -20,7 +20,6 @@ A powerful, modern recruitment application tracking system (ATS) built as a Prog
 - **Three-Status System** - Approve ✅, Reject ❌, or Pending ⏳
 - **Individual Tag Removal** - Click X to remove specific tags
 - **Live Tag Preview** - See tags as you type with color coding (Enter to preview)
-- **Bulk Operations** - Select and process multiple candidates at once
 - **Auto-sizing Fields** - Text areas automatically adjust to content length
 
 ### 📊 **Analytics Dashboard**
@@ -84,12 +83,7 @@ Visit the live application: [https://sravannotshravan.github.io/RecruitmentAppli
 - Remove individual tags by clicking the X button
 - Press Tab to auto-format comma-separated tags
 
-### 4. **Bulk Operations**
-- Select multiple candidates using checkboxes
-- Apply bulk approve, reject, or pending actions
-- Export approved candidates to Excel or VCard format
-
-### 5. **Monitor Progress**
+### 4. **Monitor Progress**
 - Check the analytics dashboard for real-time metrics
 - Track recent activity and approval rates
 - Monitor review progress across your candidate pipeline
@@ -194,7 +188,13 @@ recruitmentats/
 
 ## 🆕 Version History
 
-### v1.63.71 *(Latest - September 21, 2025)*
+### v1.63.8 *(Latest - December 29, 2024)*
+- 🗑️ **Removed Bulk Operations**: Simplified interface by removing complex bulk selection features for streamlined workflow
+- 🌈 **Updated Brand Colors**: Changed MIC Recruitments gradient to vibrant red→yellow→green→blue sequence
+- 🎯 **Streamlined UI**: Cleaner candidate review interface focused on individual decision-making
+- 📝 **Documentation Cleanup**: Updated help system and documentation to reflect simplified interface
+
+### v1.63.71 *(September 21, 2025)*
 - 📋 **Candidate Position Display**: Added visual indicator showing "Candidate X of Y" at the top of each candidate card
 - 🎯 **Enhanced Navigation**: Users can now easily see their position in the candidate list
 - 📊 **Smart Filtering Awareness**: Shows both filtered count and total count when filters are active
