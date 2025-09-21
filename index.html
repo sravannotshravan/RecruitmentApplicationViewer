@@ -965,7 +965,25 @@
             </div>
             
             <div class="instruction-section">
-              <h3>� Version 1.63.6 - Enhanced Text Overflow Prevention</h3>
+              <h3>🔧 Version 1.63.51 - Critical Pending Review Bug Fix</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 21, 2025</p>
+              <ul>
+                <li><strong>🐛 Fixed Pending Review Navigation Bug:</strong> Candidates marked as "Pending Review" no longer auto-reject when navigating to next candidate</li>
+                <li><strong>⏳ Persistent Review Status:</strong> Press '3' to mark for review - status now persists correctly during navigation</li>
+                <li><strong>🎯 Smart Auto-Rejection Logic:</strong> Only truly unreviewed candidates get auto-rejected when skipped</li>
+                <li><strong>🔄 Button Fix:</strong> "Reset to Pending" button also preserves review status correctly</li>
+                <li><strong>✅ Status Integrity:</strong> Explicit pending review decisions are now protected from auto-rejection</li>
+              </ul>
+              <p><strong>Technical Details:</strong></p>
+              <ul>
+                <li>Added explicitlySetToPending flag to distinguish intentional pending status</li>
+                <li>Modified navigation auto-rejection logic to respect explicit decisions</li>
+                <li>Updated both keyboard shortcut '3' and "Reset to Pending" button handlers</li>
+              </ul>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>🔧 Version 1.63.6 - Enhanced Text Overflow Prevention</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 21, 2025</p>
               <ul>
                 <li><strong>🚫 Text Overflow Fix:</strong> Completely eliminated text going out of bounds with stronger CSS rules</li>
@@ -1923,7 +1941,9 @@
           if (currentIndex !== null && currentIndex !== index && filteredIndexes[currentIndex] !== undefined) {
             const currentAppIndex = filteredIndexes[currentIndex];
             const currentApp = applications[currentAppIndex];
-            if (currentApp && currentApp.shortlisted === 'PENDING') {
+            // Only auto-reject if the candidate was never given an explicit decision
+            // Don't auto-reject candidates explicitly set to PENDING via keyboard shortcut
+            if (currentApp && (!currentApp.shortlisted || currentApp.shortlisted === '') && !currentApp.explicitlySetToPending) {
               currentApp.shortlisted = 'FALSE';
               showToast('⏭️ Previous candidate automatically rejected (skipped)', 'info');
             }
@@ -2318,6 +2338,7 @@
                 resetBtn.textContent = '⏳ Reset to Pending';
                 resetBtn.onclick = function() {
                   candidate['shortlisted'] = 'PENDING';
+                  candidate.explicitlySetToPending = true; // Flag to prevent auto-rejection
                   showToast('⏳ Candidate reset to pending review', 'info');
                   updateShortlistCounter();
                   showCandidate(currentIndex); // Refresh view to update button states
@@ -2391,6 +2412,7 @@
                   // Set to pending
                   e.preventDefault();
                   candidate.shortlisted = 'PENDING';
+                  candidate.explicitlySetToPending = true; // Flag to prevent auto-rejection
                   updateShortlistCounter();
                   showCandidate(currentIndex); // Refresh view
                   showToast('⏳ Candidate set to pending review (Shortcut: 3)', 'info');

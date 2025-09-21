@@ -1,6 +1,6 @@
 # 🚀 Recruitment ATS - Advanced Candidate Management System
 
-[![Version](https://img.shields.io/badge/version-1.63.6-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
+[![Version](https://img.shields.io/badge/version-1.63.51-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple.svg)](https://web.dev/progressive-web-apps/)
 
@@ -193,7 +193,14 @@ recruitmentats/
 
 ## 🆕 Version History
 
-### v1.63.6 *(Latest - September 21, 2025)*
+### v1.63.51 *(Latest - September 21, 2025)*
+- 🐛 **Critical Bug Fix**: Fixed navigation issue where candidates marked for "Pending Review" were auto-rejected
+- ⏳ **Persistent Review Status**: Press '3' to mark for review - status now persists correctly during navigation
+- 🎯 **Smart Auto-Rejection**: Only truly unreviewed candidates get auto-rejected when skipped
+- 🔄 **Button Fix**: "Reset to Pending" button also preserves review status correctly
+- ✅ **Status Integrity**: Explicit pending review decisions are now protected from auto-rejection
+
+### v1.63.6 *(September 21, 2025)*
 - 🚫 **Text Overflow Fix**: Completely eliminated text going out of bounds with stronger CSS rules
 - 📖 **Question Readability**: Replaced underscores with spaces in field labels for better readability  
 - 🔒 **Inline Style Protection**: Added !important declarations and inline styles for robust text wrapping
