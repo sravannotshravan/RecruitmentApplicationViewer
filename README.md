@@ -1,6 +1,6 @@
 # 🚀 Recruitment ATS - Advanced Candidate Management System
 
-[![Version](https://img.shields.io/badge/version-1.63.7-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
+[![Version](https://img.shields.io/badge/version-1.63.71-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple.svg)](https://web.dev/progressive-web-apps/)
 
@@ -194,7 +194,13 @@ recruitmentats/
 
 ## 🆕 Version History
 
-### v1.63.7 *(Latest - September 21, 2025)*
+### v1.63.71 *(Latest - September 21, 2025)*
+- 📋 **Candidate Position Display**: Added visual indicator showing "Candidate X of Y" at the top of each candidate card
+- 🎯 **Enhanced Navigation**: Users can now easily see their position in the candidate list
+- 📊 **Smart Filtering Awareness**: Shows both filtered count and total count when filters are active
+- 💜 **Themed Design**: Styled with gradient background and purple accent matching app theme
+
+### v1.63.7 *(September 21, 2025)*
 - 💾 **Progress Tracking**: Excel files now include metadata sheet with your current review position
 - 🔄 **Auto-Resume**: Automatically resume from where you left off when reopening saved files
 - 📊 **Smart Metadata**: Tracks candidate position, review progress percentage, and timestamp

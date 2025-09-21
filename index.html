@@ -965,7 +965,20 @@
             </div>
             
             <div class="instruction-section">
-              <h3>� Version 1.63.7 - Progress Tracking & Auto-Resume</h3>
+              <h3>📋 Version 1.63.71 - Candidate Position Display</h3>
+              <p style="color: #aaa; font-size: 0.9rem;">September 21, 2025</p>
+              <ul>
+                <li><strong>📋 Serial Number Display:</strong> Added candidate position indicator showing "Candidate X of Y"</li>
+                <li><strong>🎯 Visual Position Tracking:</strong> Prominently displayed at the top of each candidate card</li>
+                <li><strong>📊 Smart Filtering Awareness:</strong> Shows filtered count and total count when filters are active</li>
+                <li><strong>💜 Themed Design:</strong> Styled with gradient background and purple accent matching app theme</li>
+                <li><strong>📱 Responsive Layout:</strong> Centered display that works on all screen sizes</li>
+              </ul>
+              <p><strong>Example Display:</strong> "📋 Candidate 15 of 67" or "📋 Candidate 8 of 25 (67 total)" when filtered</p>
+            </div>
+            
+            <div class="instruction-section">
+              <h3>💾 Version 1.63.7 - Progress Tracking & Auto-Resume</h3>
               <p style="color: #aaa; font-size: 0.9rem;">September 21, 2025</p>
               <ul>
                 <li><strong>💾 Progress Saving:</strong> Excel files now include metadata sheet with your current review position</li>
@@ -2036,6 +2049,19 @@
           card.innerHTML = '';
 
           const candidate = applications[appIndex];
+          
+          // Add candidate serial number display
+          const serialNumberDiv = document.createElement('div');
+          serialNumberDiv.className = 'mb-3 text-center';
+          serialNumberDiv.style.background = 'linear-gradient(90deg, #bb86fc22, #232526)';
+          serialNumberDiv.style.padding = '8px 15px';
+          serialNumberDiv.style.borderRadius = '20px';
+          serialNumberDiv.style.border = '1px solid #bb86fc';
+          serialNumberDiv.style.fontSize = '0.9rem';
+          serialNumberDiv.style.fontWeight = '600';
+          serialNumberDiv.style.color = '#bb86fc';
+          serialNumberDiv.innerHTML = `📋 Candidate ${currentIndex + 1} of ${filteredIndexes.length} ${filteredIndexes.length !== applications.length ? `(${applications.length} total)` : ''}`;
+          card.appendChild(serialNumberDiv);
           
           // Add bulk selection checkbox at the top
           const checkboxWrapper = document.createElement('div');
