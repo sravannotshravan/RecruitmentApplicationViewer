@@ -1,6 +1,6 @@
 # 🚀 Recruitment ATS - Advanced Candidate Management System
 
-[![Version](https://img.shields.io/badge/version-1.63.5-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
+[![Version](https://img.shields.io/badge/version-1.63.6-blue.svg)](https://github.com/sravannotshravan/recruitmentats)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-enabled-purple.svg)](https://web.dev/progressive-web-apps/)
 
@@ -193,7 +193,14 @@ recruitmentats/
 
 ## 🆕 Version History
 
-### v1.63.5 *(Latest - September 21, 2025)*
+### v1.63.6 *(Latest - September 21, 2025)*
+- 🚫 **Text Overflow Fix**: Completely eliminated text going out of bounds with stronger CSS rules
+- 📖 **Question Readability**: Replaced underscores with spaces in field labels for better readability  
+- 🔒 **Inline Style Protection**: Added !important declarations and inline styles for robust text wrapping
+- 📐 **Container Constraints**: Enhanced box-sizing and width controls to prevent horizontal overflow
+- 🔄 **Overflow Prevention**: Added overflow-x: hidden to eliminate horizontal scrolling issues
+
+### v1.63.5 *(September 21, 2025)*
 - 📝 **Text Wrapping Enhancement**: Proper word wrapping for long questions and text content
 - 📐 **Overflow Prevention**: Text no longer goes out of bounds in form fields
 - 📏 **Auto-sizing**: Textareas automatically adjust height based on content length
